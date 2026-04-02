@@ -8,7 +8,7 @@
 <style>
 body{
   margin:0;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   background:#0f172a;
   color:white;
 }
@@ -24,6 +24,7 @@ body{
   align-items:center;
   font-size:40px;
   font-weight:bold;
+  z-index:10;
 }
 
 /* App */
@@ -45,7 +46,7 @@ h1{
   cursor:pointer;
 }
 
-.card:hover{
+.card:active{
   background:#334155;
 }
 
@@ -58,6 +59,7 @@ h1{
   color:white;
   border-radius:5px;
   display:none;
+  width:100%;
 }
 </style>
 </head>
@@ -70,6 +72,94 @@ h1{
 
 <h1>🚀 Opportune</h1>
 
-<button id="backBtn" onclick="goBack()">⬅ Back</button>
+<button id="backBtn">⬅ Back</button>
 
-<div
+<div id="content"></div>
+
+</div>
+
+<script>
+
+// Wait until everything loads
+document.addEventListener("DOMContentLoaded", function(){
+
+  setTimeout(function(){
+    document.getElementById("splash").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    showHome();
+  },1500);
+
+});
+
+const content = document.getElementById("content");
+const backBtn = document.getElementById("backBtn");
+
+// Back button
+backBtn.onclick = function(){
+  showHome();
+};
+
+// HOME
+function showHome(){
+  backBtn.style.display = "none";
+
+  content.innerHTML = `
+    <div class="card" onclick="showJobs()">💼 Jobs</div>
+    <div class="card" onclick="showHustles()">💰 Side Hustles</div>
+    <div class="card" onclick="showScholarships()">🎓 Scholarships</div>
+    <div class="card" onclick="showBusiness()">🚀 Business Ideas</div>
+  `;
+}
+
+// JOBS
+function showJobs(){
+  backBtn.style.display = "block";
+
+  content.innerHTML = `
+    <div class="card">Shop assistant needed nearby</div>
+    <div class="card">Online typing jobs</div>
+    <div class="card">Delivery helper job</div>
+    <div class="card">Freelance writing</div>
+  `;
+}
+
+// HUSTLES
+function showHustles(){
+  backBtn.style.display = "block";
+
+  content.innerHTML = `
+    <div class="card">Sell snacks</div>
+    <div class="card">Phone charging business</div>
+    <div class="card">Poster design</div>
+    <div class="card">Resell clothes</div>
+  `;
+}
+
+// SCHOLARSHIPS
+function showScholarships(){
+  backBtn.style.display = "block";
+
+  content.innerHTML = `
+    <div class="card">Government scholarships</div>
+    <div class="card">Free online courses</div>
+    <div class="card">Study abroad programs</div>
+    <div class="card">NGO education support</div>
+  `;
+}
+
+// BUSINESS
+function showBusiness(){
+  backBtn.style.display = "block";
+
+  content.innerHTML = `
+    <div class="card">Food business</div>
+    <div class="card">Laundry service</div>
+    <div class="card">Mobile money agent</div>
+    <div class="card">Printing business</div>
+  `;
+}
+
+</script>
+
+</body>
+</html>
