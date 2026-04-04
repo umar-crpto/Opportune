@@ -13,35 +13,29 @@ body {
 }
 
 /* Header */
-h1{
+h1 {
   text-align:center;
   padding:15px;
 }
 
-/* Container */
-#content{
-  padding:15px;
-}
-
 /* Cards */
-.card{
+.card {
   background:#1e293b;
   padding:15px;
-  margin:10px 0;
+  margin:10px;
   border-radius:10px;
   cursor:pointer;
 }
 
 /* Back button */
-#backBtn{
+#backBtn {
   display:none;
   margin:10px;
   padding:10px;
   background:#3b82f6;
-  border:none;
   color:white;
+  border:none;
   border-radius:5px;
-  width:90%;
 }
 </style>
 </head>
@@ -56,12 +50,7 @@ h1{
 
 <script>
 
-// Load home immediately (NO splash to avoid bugs)
-window.onload = function(){
-  showHome();
-}
-
-// HOME
+// HOME LOAD
 function showHome(){
   document.getElementById("backBtn").style.display = "none";
 
@@ -83,7 +72,53 @@ function showJobs(){
   document.getElementById("backBtn").style.display = "block";
 
   document.getElementById("content").innerHTML = `
-    <div class="card">Shop assistant job (near shops)</div>
-    <div class="card">Online typing/data entry</div>
+    <div class="card">Shop assistant job</div>
+    <div class="card">Online typing job</div>
     <div class="card">Delivery helper</div>
-    <div class="card">Fre
+    <div class="card">Freelance writing</div>
+  `;
+}
+
+// HUSTLES
+function showHustles(){
+  document.getElementById("backBtn").style.display = "block";
+
+  document.getElementById("content").innerHTML = `
+    <div class="card">Sell snacks</div>
+    <div class="card">Phone charging business</div>
+    <div class="card">Poster design</div>
+    <div class="card">Resell clothes</div>
+  `;
+}
+
+// SCHOLARSHIPS
+function showScholarships(){
+  document.getElementById("backBtn").style.display = "block";
+
+  document.getElementById("content").innerHTML = `
+    <div class="card">Government scholarships</div>
+    <div class="card">Free online courses</div>
+    <div class="card">Study abroad programs</div>
+    <div class="card">NGO support</div>
+  `;
+}
+
+// BUSINESS
+function showBusiness(){
+  document.getElementById("backBtn").style.display = "block";
+
+  document.getElementById("content").innerHTML = `
+    <div class="card">Food business</div>
+    <div class="card">Laundry service</div>
+    <div class="card">Mobile money agent</div>
+    <div class="card">Printing business</div>
+  `;
+}
+
+// RUN APP
+showHome();
+
+</script>
+
+</body>
+</html>
