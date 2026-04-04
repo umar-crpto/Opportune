@@ -3,24 +3,45 @@
 <head>
 <title>Opportune</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body {
+  margin:0;
   font-family: Arial;
-  background: #0f172a;
-  color: white;
-  text-align: center;
-  padding: 20px;
+  background:#0f172a;
+  color:white;
 }
 
-button {
-  padding: 15px;
-  margin: 10px;
-  width: 90%;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
+/* Header */
+h1{
+  text-align:center;
+  padding:15px;
+}
+
+/* Container */
+#content{
+  padding:15px;
+}
+
+/* Cards */
+.card{
+  background:#1e293b;
+  padding:15px;
+  margin:10px 0;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* Back button */
+#backBtn{
+  display:none;
+  margin:10px;
+  padding:10px;
+  background:#3b82f6;
+  border:none;
+  color:white;
+  border-radius:5px;
+  width:90%;
 }
 </style>
 </head>
@@ -29,10 +50,40 @@ button {
 
 <h1>🚀 Opportune</h1>
 
-<button onclick="alert('Jobs coming soon')">💼 Jobs</button>
-<button onclick="alert('Hustles coming soon')">💰 Side Hustles</button>
-<button onclick="alert('Scholarships coming soon')">🎓 Scholarships</button>
-<button onclick="alert('Business ideas coming soon')">🚀 Business</button>
+<button id="backBtn" onclick="goHome()">⬅ Back</button>
 
-</body>
-</html>
+<div id="content"></div>
+
+<script>
+
+// Load home immediately (NO splash to avoid bugs)
+window.onload = function(){
+  showHome();
+}
+
+// HOME
+function showHome(){
+  document.getElementById("backBtn").style.display = "none";
+
+  document.getElementById("content").innerHTML = `
+    <div class="card" onclick="showJobs()">💼 Jobs</div>
+    <div class="card" onclick="showHustles()">💰 Side Hustles</div>
+    <div class="card" onclick="showScholarships()">🎓 Scholarships</div>
+    <div class="card" onclick="showBusiness()">🚀 Business Ideas</div>
+  `;
+}
+
+// BACK
+function goHome(){
+  showHome();
+}
+
+// JOBS
+function showJobs(){
+  document.getElementById("backBtn").style.display = "block";
+
+  document.getElementById("content").innerHTML = `
+    <div class="card">Shop assistant job (near shops)</div>
+    <div class="card">Online typing/data entry</div>
+    <div class="card">Delivery helper</div>
+    <div class="card">Fre
