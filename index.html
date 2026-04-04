@@ -1,165 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Opportune</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#0f172a;
-  color:white;
+body {
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  text-align: center;
+  padding: 20px;
 }
 
-/* Splash */
-#splash{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:#0f172a;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:40px;
-  font-weight:bold;
-  z-index:10;
-}
-
-/* App */
-#app{
-  display:none;
-  padding:15px;
-}
-
-h1{
-  text-align:center;
-}
-
-/* Cards */
-.card{
-  background:#1e293b;
-  padding:15px;
-  margin:10px 0;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.card:active{
-  background:#334155;
-}
-
-/* Back button */
-#backBtn{
-  margin-bottom:10px;
-  padding:10px;
-  background:#3b82f6;
-  border:none;
-  color:white;
-  border-radius:5px;
-  display:none;
-  width:100%;
+button {
+  padding: 15px;
+  margin: 10px;
+  width: 90%;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="splash">Opportune</div>
-
-<div id="app">
-
 <h1>🚀 Opportune</h1>
 
-<button id="backBtn">⬅ Back</button>
-
-<div id="content"></div>
-
-</div>
-
-<script>
-
-// Wait until everything loads
-document.addEventListener("DOMContentLoaded", function(){
-
-  setTimeout(function(){
-    document.getElementById("splash").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    showHome();
-  },1500);
-
-});
-
-const content = document.getElementById("content");
-const backBtn = document.getElementById("backBtn");
-
-// Back button
-backBtn.onclick = function(){
-  showHome();
-};
-
-// HOME
-function showHome(){
-  backBtn.style.display = "none";
-
-  content.innerHTML = `
-    <div class="card" onclick="showJobs()">💼 Jobs</div>
-    <div class="card" onclick="showHustles()">💰 Side Hustles</div>
-    <div class="card" onclick="showScholarships()">🎓 Scholarships</div>
-    <div class="card" onclick="showBusiness()">🚀 Business Ideas</div>
-  `;
-}
-
-// JOBS
-function showJobs(){
-  backBtn.style.display = "block";
-
-  content.innerHTML = `
-    <div class="card">Shop assistant needed nearby</div>
-    <div class="card">Online typing jobs</div>
-    <div class="card">Delivery helper job</div>
-    <div class="card">Freelance writing</div>
-  `;
-}
-
-// HUSTLES
-function showHustles(){
-  backBtn.style.display = "block";
-
-  content.innerHTML = `
-    <div class="card">Sell snacks</div>
-    <div class="card">Phone charging business</div>
-    <div class="card">Poster design</div>
-    <div class="card">Resell clothes</div>
-  `;
-}
-
-// SCHOLARSHIPS
-function showScholarships(){
-  backBtn.style.display = "block";
-
-  content.innerHTML = `
-    <div class="card">Government scholarships</div>
-    <div class="card">Free online courses</div>
-    <div class="card">Study abroad programs</div>
-    <div class="card">NGO education support</div>
-  `;
-}
-
-// BUSINESS
-function showBusiness(){
-  backBtn.style.display = "block";
-
-  content.innerHTML = `
-    <div class="card">Food business</div>
-    <div class="card">Laundry service</div>
-    <div class="card">Mobile money agent</div>
-    <div class="card">Printing business</div>
-  `;
-}
-
-</script>
+<button onclick="alert('Jobs coming soon')">💼 Jobs</button>
+<button onclick="alert('Hustles coming soon')">💰 Side Hustles</button>
+<button onclick="alert('Scholarships coming soon')">🎓 Scholarships</button>
+<button onclick="alert('Business ideas coming soon')">🚀 Business</button>
 
 </body>
 </html>
