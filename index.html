@@ -23,7 +23,7 @@ h1{
   width:90%;
   margin:10px;
   padding:12px;
-  border-radius:8px;
+  border-radius:10px;
   border:none;
   font-size:16px;
 }
@@ -33,12 +33,17 @@ h1{
   background:#1e293b;
   padding:15px;
   margin:10px;
-  border-radius:10px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Clickable */
 .clickable{
   cursor:pointer;
+  transition:0.2s;
+}
+
+.clickable:active{
+  transform:scale(0.97);
 }
 
 /* Star */
@@ -47,7 +52,7 @@ h1{
   cursor:pointer;
 }
 
-/* Back button */
+/* Back */
 #backBtn{
   display:none;
   margin:10px;
@@ -55,7 +60,7 @@ h1{
   background:#3b82f6;
   border:none;
   color:white;
-  border-radius:5px;
+  border-radius:8px;
 }
 </style>
 </head>
@@ -64,7 +69,7 @@ h1{
 
 <h1>🚀 Opportune</h1>
 
-<input id="search" placeholder="Search..." onkeyup="search()">
+<input id="search" placeholder="Search opportunities..." onkeyup="search()">
 
 <button id="backBtn" onclick="goHome()">⬅ Back</button>
 
@@ -73,33 +78,27 @@ h1{
 <script>
 
 // DATA
-const jobs = [
-"Shop assistant job",
-"Online typing job",
-"Delivery helper",
-"Freelance writing"
-];
+const data = {
+jobs: ["Shop assistant","Delivery job","Office assistant","Freelance writing","Retail worker"],
 
-const hustles = [
-"Sell snacks",
-"Phone charging business",
-"Poster design",
-"Resell clothes"
-];
+hustles: ["Sell snacks","Phone charging","Poster design","Resell clothes","Car washing"],
 
-const scholarships = [
-"Government scholarships",
-"Free online courses",
-"Study abroad programs",
-"NGO education support"
-];
+scholarships: ["Government scholarship","Study abroad","Free courses","NGO support","Online certificates"],
 
-const business = [
-"Food business",
-"Laundry service",
-"Mobile money agent",
-"Printing business"
-];
+business: ["Food business","Laundry service","Mobile money","Printing","Salon business"],
+
+skills: ["Learn coding","Graphic design","Video editing","Public speaking","Marketing"],
+
+online: ["Fiverr gigs","Upwork jobs","Typing online","Selling on Jumia","Affiliate marketing"],
+
+digital: ["Social media management","Content creation","YouTube automation","Blogging","SEO"],
+
+competitions: ["Essay competitions","Tech contests","Startup competitions","Hackathons","School contests"],
+
+ideas: ["Start YouTube channel","Sell ebooks","Create app","Dropshipping","Online tutoring"],
+
+learning: ["Free YouTube courses","Google certificates","Coursera","Khan Academy","Skillshare"]
+};
 
 let currentList = [];
 let saved = [];
@@ -110,10 +109,16 @@ function showHome(){
   document.getElementById("search").value="";
 
   document.getElementById("content").innerHTML = `
-    <div class="card clickable" onclick="openList(jobs)">💼 Jobs</div>
-    <div class="card clickable" onclick="openList(hustles)">💰 Side Hustles</div>
-    <div class="card clickable" onclick="openList(scholarships)">🎓 Scholarships</div>
-    <div class="card clickable" onclick="openList(business)">🚀 Business</div>
+    <div class="card clickable" onclick="openList(data.jobs)">💼 Jobs</div>
+    <div class="card clickable" onclick="openList(data.hustles)">💰 Side Hustles</div>
+    <div class="card clickable" onclick="openList(data.scholarships)">🎓 Scholarships</div>
+    <div class="card clickable" onclick="openList(data.business)">🚀 Business</div>
+    <div class="card clickable" onclick="openList(data.skills)">🧠 Skills</div>
+    <div class="card clickable" onclick="openList(data.online)">🌐 Online Work</div>
+    <div class="card clickable" onclick="openList(data.digital)">📱 Digital Skills</div>
+    <div class="card clickable" onclick="openList(data.competitions)">🏆 Competitions</div>
+    <div class="card clickable" onclick="openList(data.ideas)">💡 Ideas</div>
+    <div class="card clickable" onclick="openList(data.learning)">📚 Free Learning</div>
     <div class="card clickable" onclick="showSaved()">⭐ Saved</div>
   `;
 }
@@ -127,8 +132,8 @@ function openList(list){
 
 // DISPLAY
 function display(list){
-  if(list.length === 0){
-    document.getElementById("content").innerHTML = "<div class='card'>No results</div>";
+  if(list.length===0){
+    document.getElementById("content").innerHTML="<div class='card'>No results</div>";
     return;
   }
 
@@ -140,44 +145,31 @@ function display(list){
   `).join("");
 }
 
-// SAVE (FIXED)
-function saveItem(item, event){
+// SAVE
+function saveItem(item,event){
   event.stopPropagation();
-
   if(!saved.includes(item)){
     saved.push(item);
     alert("Saved!");
-  } else {
-    alert("Already saved");
   }
 }
 
-// SEARCH (FIXED)
+// SEARCH
 function search(){
-  let input = document.getElementById("search").value.toLowerCase();
+  let input=document.getElementById("search").value.toLowerCase();
 
-  if(input === ""){
-    display(currentList);
-    return;
-  }
-
-  let results = currentList.filter(item =>
+  let results=currentList.filter(item =>
     item.toLowerCase().includes(input)
   );
 
   display(results);
 }
 
-// SHOW SAVED
+// SAVED
 function showSaved(){
   document.getElementById("backBtn").style.display="block";
-  currentList = saved;
-
-  if(saved.length === 0){
-    display(["No saved items"]);
-  } else {
-    display(saved);
-  }
+  currentList=saved;
+  display(saved.length?saved:["No saved items"]);
 }
 
 // BACK
