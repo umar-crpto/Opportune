@@ -17,12 +17,29 @@ h1{
   padding:10px;
 }
 
-.card{
-  background:#1e293b;
-  padding:15px;
+.section{
   margin:10px;
+  padding:10px;
+  background:#1e293b;
   border-radius:10px;
+}
+
+.card{
+  background:#334155;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
   cursor:pointer;
+}
+
+.btn{
+  background:#3b82f6;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  color:white;
+  margin-top:10px;
+  text-align:center;
 }
 
 #search{
@@ -49,7 +66,7 @@ h1{
 
 <h1>🚀 Opportune</h1>
 
-<input id="search" placeholder="Search..." onkeyup="search()">
+<input id="search" placeholder="Search opportunities..." onkeyup="search()">
 
 <button id="backBtn" onclick="goHome()">⬅ Back</button>
 
@@ -57,86 +74,30 @@ h1{
 
 <script>
 
-// SAFE DATA
-var data = [
-"Sell snacks",
-"Freelance writing",
-"Laundry business",
-"Graphic design",
-"Scholarships abroad"
-];
+// SAFE STORAGE
+let saved = JSON.parse(localStorage.getItem("saved") || "[]");
 
-var currentList = [];
-var saved = [];
+let currentList = [];
 
-// HOME
-function showHome(){
-  document.getElementById("backBtn").style.display="none";
-
-  var html = "";
-  html += "<div class='card' onclick='openList()'>🌍 Opportunities</div>";
-  html += "<div class='card' onclick='showSaved()'>⭐ Saved</div>";
-
-  document.getElementById("content").innerHTML = html;
-}
-
-// OPEN LIST
-function openList(){
-  document.getElementById("backBtn").style.display="block";
-  currentList = data;
-  display(data);
-}
-
-// DISPLAY
-function display(list){
-  var html = "";
-
-  if(list.length === 0){
-    html = "<div class='card'>No results</div>";
-  } else {
-    for(var i=0;i<list.length;i++){
-      html += "<div class='card'>"+list[i]+"</div>";
-    }
-  }
-
-  document.getElementById("content").innerHTML = html;
-}
-
-// SEARCH
-function search(){
-  var input = document.getElementById("search").value.toLowerCase();
-
-  var results = [];
-
-  for(var i=0;i<data.length;i++){
-    if(data[i].toLowerCase().includes(input)){
-      results.push(data[i]);
-    }
-  }
-
-  display(results);
-}
-
-// SAVED
-function showSaved(){
-  document.getElementById("backBtn").style.display="block";
-
-  if(saved.length === 0){
-    document.getElementById("content").innerHTML = "<div class='card'>No saved items</div>";
-  } else {
-    display(saved);
-  }
-}
-
-// BACK
-function goHome(){
-  showHome();
-}
-
-// START
-showHome();
-
-</script>
-
-</body>
-</html>
+// REAL DATA (DETAILED)
+const data = [
+{
+title:"Sell snacks at school",
+problem:"money",
+desc:"Start a small snack business and earn daily income.",
+cost:"10,000 - 50,000 UGX",
+steps:"Buy biscuits and juice, sell at school or roadside, reinvest profits.",
+tip:"Sell during break time where students gather."
+},
+{
+title:"Laundry service",
+problem:"money",
+desc:"Wash clothes for people and get paid.",
+cost:"0 - 20,000 UGX",
+steps:"Start in your area, charge per cloth, deliver on time.",
+tip:"Target busy people or students."
+},
+{
+title:"Study abroad scholarship",
+problem:"study",
+desc:"Apply for scholarships and study for free.",
