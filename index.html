@@ -14,6 +14,7 @@ body{
 
 h1{
   text-align:center;
+  padding:10px;
 }
 
 .section{
@@ -73,18 +74,20 @@ h1{
 
 <script>
 
-let saved = JSON.parse(localStorage.getItem("saved")) || [];
-let points = localStorage.getItem("points") || 0;
-
-const data = [
-{title:"Sell snacks",desc:"Start small snack business",action:"Start with 20k UGX"},
-{title:"Freelance writing",desc:"Write articles online",action:"Use Fiverr"},
-{title:"Scholarship abroad",desc:"Study free overseas",action:"Search scholarships"},
-{title:"Laundry service",desc:"Wash clothes for money",action:"Start locally"},
-{title:"Graphic design",desc:"Design posters",action:"Learn Canva"}
-];
+// SAFE LOAD
+let saved = JSON.parse(localStorage.getItem("saved") || "[]");
+let points = parseInt(localStorage.getItem("points") || "0");
 
 let currentList = [];
+
+// DATA
+const data = [
+{title:"Sell snacks",desc:"Start small snack business",action:"Start with 20k UGX"},
+{title:"Freelance writing",desc:"Write articles online",action:"Use Fiverr or Upwork"},
+{title:"Scholarship abroad",desc:"Study free overseas",action:"Search scholarships online"},
+{title:"Laundry service",desc:"Wash clothes for money",action:"Start locally in your area"},
+{title:"Graphic design",desc:"Design posters and logos",action:"Learn using Canva"}
+];
 
 // HOME
 function showHome(){
@@ -92,33 +95,43 @@ function showHome(){
 
   let daily = data[Math.floor(Math.random()*data.length)];
 
-  document.getElementById("content").innerHTML = `
-  
+  let html = "";
+
+  html += `
   <div class="section">
     <h3>👋 Welcome</h3>
     <p>Let’s improve your life today</p>
     <p>🏆 Points: ${points}</p>
   </div>
+  `;
 
+  html += `
   <div class="section">
     <h3>🔥 Daily Opportunity</h3>
-    <div class="card" onclick="showDetail('${daily.title}')">
-      ${daily.title}
-    </div>
+    <div class="card" onclick="showDetail('${daily.title}')">${daily.title}</div>
   </div>
+  `;
 
+  html += `
   <div class="section">
     <h3>📈 Trending</h3>
-    ${data.slice(0,3).map(i=>`<div class="card" onclick="showDetail('${i.title}')">${i.title}</div>`).join("")}
-  </div>
+  `;
 
+  data.slice(0,3).forEach(i=>{
+    html += `<div class="card" onclick="showDetail('${i.title}')">${i.title}</div>`;
+  });
+
+  html += `</div>`;
+
+  html += `
   <div class="section">
     <h3>🌍 Explore</h3>
     <div class="card" onclick="openList()">All Opportunities</div>
     <div class="card" onclick="showSaved()">⭐ Saved</div>
   </div>
-
   `;
+
+  document.getElementById("content").innerHTML = html;
 }
 
 // LIST
@@ -130,9 +143,17 @@ function openList(){
 
 // DISPLAY
 function display(list){
-  document.getElementById("content").innerHTML = list.map(i=>`
-    <div class="card" onclick="showDetail('${i.title}')">${i.title}</div>
-  `).join("");
+  if(list.length===0){
+    document.getElementById("content").innerHTML="<div class='card'>No results</div>";
+    return;
+  }
+
+  let html = "";
+  list.forEach(i=>{
+    html += `<div class="card" onclick="showDetail('${i.title}')">${i.title}</div>`;
+  });
+
+  document.getElementById("content").innerHTML = html;
 }
 
 // DETAIL
@@ -156,4 +177,44 @@ function showDetail(title){
 function saveItem(title){
   let item = data.find(i=>i.title===title);
 
-  if(!saved.find(i=>i.title===title
+  if(!saved.find(i=>i.title===title)){
+    saved.push(item);
+    localStorage.setItem("saved", JSON.stringify(saved));
+    alert("Saved!");
+  }
+}
+
+// SAVED
+function showSaved(){
+  document.getElementById("backBtn").style.display="block";
+
+  if(saved.length===0){
+    document.getElementById("content").innerHTML="<div class='card'>No saved items</div>";
+  } else {
+    display(saved);
+  }
+}
+
+// SEARCH
+function search(){
+  let input = document.getElementById("search").value.toLowerCase();
+
+  let results = data.filter(i =>
+    i.title.toLowerCase().includes(input)
+  );
+
+  display(results);
+}
+
+// BACK
+function goHome(){
+  showHome();
+}
+
+// START
+showHome();
+
+</script>
+
+</body>
+</html>
