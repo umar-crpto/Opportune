@@ -1,191 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Opportune</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opportune</title>
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#0f172a;
-  color:white;
-}
-h1{
-  text-align:center;
-  padding:10px;
-}
-.section{
-  margin:10px;
-  padding:10px;
-  background:#1e293b;
-  border-radius:10px;
-}
-.card{
-  background:#334155;
-  padding:12px;
-  margin:8px 0;
-  border-radius:8px;
-  cursor:pointer;
-}
-.btn{
-  background:#3b82f6;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  color:white;
-  margin-top:10px;
-  text-align:center;
-}
-#search{
-  width:90%;
-  margin:10px;
-  padding:10px;
-  border-radius:8px;
-  border:none;
-}
-#backBtn{
-  display:none;
-  margin:10px;
-  padding:10px;
-  background:#3b82f6;
-  border:none;
-  color:white;
-  border-radius:8px;
-}
-.level{
-  text-align:center;
-  font-weight:bold;
-  margin:10px 0;
-}
-.daily{
-  margin:10px;
-  padding:10px;
-  background:#2563eb;
-  border-radius:10px;
-  text-align:center;
-}
+body { margin:0; font-family:Arial; background:#0f172a; color:white; }
+h1 { text-align:center; padding:15px; }
+.section { margin:10px; padding:12px; background:#1e293b; border-radius:12px; }
+.card { background:#334155; padding:12px; margin:8px 0; border-radius:10px; cursor:pointer; }
+.btn { background:#3b82f6; padding:10px; border:none; border-radius:8px; color:white; margin-top:10px; text-align:center; display:inline-block; }
+#search { width:92%; margin:10px; padding:10px; border-radius:8px; border:none; font-size:16px; }
+#backBtn { display:none; margin:10px; padding:10px; background:#3b82f6; border:none; color:white; border-radius:8px; font-size:16px; }
+.level { text-align:center; font-weight:bold; margin:12px 0; font-size:18px; }
+.daily { margin:10px; padding:10px; background:#2563eb; border-radius:10px; text-align:center; font-size:16px; }
 </style>
 </head>
 <body>
 
 <h1>🚀 Opportune</h1>
 <div class="level" id="levelDisplay">Level 1</div>
-
 <input id="search" placeholder="Search opportunities..." onkeyup="searchOpportunities()">
-<button id="backBtn" onclick="goHome()">⬅ Back</button>
+<button id="backBtn" onclick="showHome()">⬅ Back</button>
 <div class="daily" id="dailySuggestion"></div>
 <div id="content"></div>
 
 <script>
-// Persistent data
+// ---------------- Persistent Data ----------------
 let saved = JSON.parse(localStorage.getItem("saved") || "[]");
-let currentList = [];
 let level = parseInt(localStorage.getItem("level") || "1");
+let currentList = [];
 
-// Opportunities database
+// ---------------- Opportunities Database ----------------
 const opportunities = [
-  {title:"Sell snacks at school",problem:"money",desc:"Start a small snack business.",cost:"10k-50k UGX",steps:"Buy biscuits and juice, sell at school or roadside.",tip:"Sell during break time."},
-  {title:"Laundry service",problem:"money",desc:"Wash clothes for people and get paid.",cost:"0-20k UGX",steps:"Charge per cloth, deliver on time.",tip:"Target busy people or students."},
-  {title:"Study abroad scholarship",problem:"study",desc:"Apply for scholarships to study for free.",cost:"Mostly free",steps:"Search online, apply early, prepare documents.",tip:"Look for fully funded scholarships."},
-  {title:"Graphic design",problem:"skill",desc:"Learn design and make money creating posters.",cost:"Free (phone apps)",steps:"Learn Canva, practice, offer services.",tip:"Start with small jobs."},
-  {title:"Phone charging business",problem:"money",desc:"Charge phones at busy areas.",cost:"20k-100k UGX",steps:"Get cable, find location, charge per phone.",tip:"Choose places with no electricity."},
-  {title:"Freelance writing",problem:"skill",desc:"Write articles online.",cost:"Free",steps:"Register on freelance sites, start writing.",tip:"Start with short articles."},
-  {title:"Online tutoring",problem:"study",desc:"Teach students online.",cost:"Free",steps:"Choose subjects, find students online.",tip:"Use video calls for sessions."},
-  {title:"Blogging for income",problem:"money",desc:"Start a blog and earn from ads.",cost:"Low",steps:"Choose niche, create content, monetize.",tip:"Consistency is key."}
-];
-
-// Daily suggestion
-function showDaily(){
-  let daily = opportunities[Math.floor(Math.random()*opportunities.length)];
-  document.getElementById("dailySuggestion").innerHTML = `📌 Daily Opportunity: <b>${daily.title}</b>`;
-}
-showDaily();
-
-// Update level display
-function updateLevelDisplay(){
-  document.getElementById("levelDisplay").innerText = `Level ${level}`;
-  localStorage.setItem("level", level);
-}
-
-// Home screen
-function showHome(){
-  document.getElementById("backBtn").style.display="none";
-  let html = `
-  <div class="section"><h3>👋 Welcome</h3><p>Find opportunities to improve your life</p></div>
-  <div class="section"><h3>🎯 Choose Your Situation</h3>
-    <div class="card" onclick="filterByProblem('money')">💰 I need money</div>
-    <div class="card" onclick="filterByProblem('study')">🎓 I want to study</div>
-    <div class="card" onclick="filterByProblem('skill')">🧠 I want skills</div>
-  </div>
-  <div class="section"><h3>🌍 Explore</h3>
-    <div class="card" onclick="openAll()">All Opportunities</div>
-    <div class="card" onclick="showSaved()">⭐ Saved</div>
-  </div>`;
-  document.getElementById("content").innerHTML = html;
-}
-
-// Filter by problem
-function filterByProblem(type){
-  document.getElementById("backBtn").style.display="block";
-  currentList = opportunities.filter(item => item.problem === type);
-  displayList(currentList);
-}
-
-// Open all
-function openAll(){
-  document.getElementById("backBtn").style.display="block";
-  currentList = opportunities;
-  displayList(opportunities);
-}
-
-// Display list
-function displayList(list){
-  if(list.length === 0){document.getElementById("content").innerHTML = "<div class='card'>No results</div>";return;}
-  let html = "";
-  list.forEach(item=>{
-    html += `<div class="card" onclick="showDetail('${item.title}')">${item.title}</div>`;
-  });
-  document.getElementById("content").innerHTML = html;
-}
-
-// Show detail
-function showDetail(title){
-  let item = opportunities.find(i=>i.title===title) || saved.find(i=>i.title===title);
-  document.getElementById("content").innerHTML = `
-    <div class="section">
-      <h2>${item.title}</h2>
-      <p>${item.desc}</p>
-      <p><b>💰 Cost:</b> ${item.cost}</p>
-      <p><b>📌 Steps:</b> ${item.steps}</p>
-      <p><b>💡 Tip:</b> ${item.tip}</p>
-      <div class="btn" onclick="saveItem('${item.title}')">⭐ Save</div>
-    </div>`;
-}
-
-// Save opportunity
-function saveItem(title){
-  let item = opportunities.find(i=>i.title===title);
-  if(!saved.find(i=>i.title===title)){saved.push(item); localStorage.setItem("saved",JSON.stringify(saved)); alert("Saved!"); level++; updateLevelDisplay();}
-  else{alert("Already saved");}
-}
-
-// Show saved
-function showSaved(){
-  document.getElementById("backBtn").style.display="block";
-  if(saved.length===0){document.getElementById("content").innerHTML="<div class='card'>No saved items</div>";}
-  else{displayList(saved);}
-}
-
-// Search
-function searchOpportunities(){
-  let input = document.getElementById("search").value.toLowerCase();
-  let results = opportunities.filter(item=>item.title.toLowerCase().includes(input));
-  displayList(results);
-}
-
-// Back
-function goHome(){showHome();}
-
-// Start
-updateLevelDisplay();
-showHome();
+{title:"Sell snacks at school",problem:"money",desc:"Start a small snack business.",cost:"10k-50k UGX",steps:"Buy biscuits and juice, sell at school or roadside.",tip:"Sell during break time."},
+{title:"Laundry service",problem:"money",desc:"Wash clothes for people and get paid.",cost:"0-20k UGX",steps:"Charge per cloth, deliver on time.",tip:"Target busy people or students."},
+{title:"Study abroad scholarship",problem:"study",desc:"Apply for scholarships to study for free.",cost:"Mostly free",steps:"Search online, apply early, prepare documents.",tip:"Look for fully funded scholarships."},
+{title:"Graphic design",problem:"skill",desc:"Learn design and make money creating posters.",cost:"Free (phone apps)",steps:"Learn Canva, practice, offer services.",tip:"Start with small jobs."},
+{title:"Freelance writing",problem:"skill",desc:"Write articles online.",cost:"Free",steps:"Register on freelance sites, start writing.",tip:"Start with short articles."},
+{title:"Online tutoring",problem:"study",desc:"Teach students online.",cost:"Free",steps:"Choose subjects, find students online.",tip:"Use video calls for sessions."},
+{title:"Blogging for income",problem:"money",desc:"Start a blog and earn from ads.",cost:"Low",steps:"Choose niche, create content, monetize.",
