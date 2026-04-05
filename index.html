@@ -39,4 +39,108 @@ const opportunities = [
 {title:"Graphic design",problem:"skill",desc:"Learn design and make money creating posters.",cost:"Free (phone apps)",steps:"Learn Canva, practice, offer services.",tip:"Start with small jobs."},
 {title:"Freelance writing",problem:"skill",desc:"Write articles online.",cost:"Free",steps:"Register on freelance sites, start writing.",tip:"Start with short articles."},
 {title:"Online tutoring",problem:"study",desc:"Teach students online.",cost:"Free",steps:"Choose subjects, find students online.",tip:"Use video calls for sessions."},
-{title:"Blogging for income",problem:"money",desc:"Start a blog and earn from ads.",cost:"Low",steps:"Choose niche, create content, monetize.",
+{title:"Blogging for income",problem:"money",desc:"Start a blog and earn from ads.",cost:"Low",steps:"Choose niche, create content, monetize.",tip:"Consistency is key."},
+{title:"Phone charging business",problem:"money",desc:"Charge phones at busy areas.",cost:"20k-100k UGX",steps:"Get cable, find location, charge per phone.",tip:"Choose places with no electricity."}
+];
+
+// ---------------- Daily Suggestion ----------------
+function showDaily(){
+  let daily = opportunities[Math.floor(Math.random()*opportunities.length)];
+  document.getElementById("dailySuggestion").innerHTML = `📌 Daily Opportunity: <b>${daily.title}</b>`;
+}
+showDaily();
+
+// ---------------- Level Display ----------------
+function updateLevelDisplay(){
+  document.getElementById("levelDisplay").innerText = `Level ${level}`;
+  localStorage.setItem("level", level);
+}
+
+// ---------------- Home Screen ----------------
+function showHome(){
+  document.getElementById("backBtn").style.display="none";
+  let html = `
+    <div class="section"><h3>👋 Welcome</h3><p>Find opportunities to improve your life</p></div>
+    <div class="section"><h3>🎯 Choose Your Situation</h3>
+      <div class="card" onclick="filterByProblem('money')">💰 I need money</div>
+      <div class="card" onclick="filterByProblem('study')">🎓 I want to study</div>
+      <div class="card" onclick="filterByProblem('skill')">🧠 I want skills</div>
+    </div>
+    <div class="section"><h3>🌍 Explore</h3>
+      <div class="card" onclick="openAll()">All Opportunities</div>
+      <div class="card" onclick="showSaved()">⭐ Saved</div>
+    </div>
+  `;
+  document.getElementById("content").innerHTML = html;
+}
+
+// ---------------- Filter & Display ----------------
+function filterByProblem(type){
+  document.getElementById("backBtn").style.display="block";
+  currentList = opportunities.filter(item => item.problem === type);
+  displayList(currentList);
+}
+
+function openAll(){
+  document.getElementById("backBtn").style.display="block";
+  currentList = opportunities;
+  displayList(opportunities);
+}
+
+function displayList(list){
+  if(list.length === 0){document.getElementById("content").innerHTML="<div class='card'>No results</div>"; return;}
+  let html = "";
+  list.forEach(item=>{
+    html += `<div class="card" onclick="showDetail('${item.title}')">${item.title}</div>`;
+  });
+  document.getElementById("content").innerHTML = html;
+}
+
+// ---------------- Show Detail ----------------
+function showDetail(title){
+  let item = opportunities.find(i=>i.title===title) || saved.find(i=>i.title===title);
+  document.getElementById("content").innerHTML = `
+    <div class="section">
+      <h2>${item.title}</h2>
+      <p>${item.desc}</p>
+      <p><b>💰 Cost:</b> ${item.cost}</p>
+      <p><b>📌 Steps:</b> ${item.steps}</p>
+      <p><b>💡 Tip:</b> ${item.tip}</p>
+      <div class="btn" onclick="saveItem('${item.title}')">⭐ Save</div>
+    </div>
+  `;
+}
+
+// ---------------- Save Function ----------------
+function saveItem(title){
+  let item = opportunities.find(i=>i.title===title);
+  if(!saved.find(i=>i.title===title)){
+    saved.push(item);
+    localStorage.setItem("saved", JSON.stringify(saved));
+    alert("Saved!");
+    level++;
+    updateLevelDisplay();
+  } else { alert("Already saved"); }
+}
+
+// ---------------- Show Saved ----------------
+function showSaved(){
+  document.getElementById("backBtn").style.display="block";
+  if(saved.length===0){document.getElementById("content").innerHTML="<div class='card'>No saved items</div>";}
+  else{displayList(saved);}
+}
+
+// ---------------- Search ----------------
+function searchOpportunities(){
+  let input = document.getElementById("search").value.toLowerCase();
+  let results = opportunities.filter(item=>item.title.toLowerCase().includes(input));
+  displayList(results);
+}
+
+// ---------------- Initialize ----------------
+updateLevelDisplay();
+showHome();
+</script>
+
+</body>
+</html>
