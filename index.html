@@ -17,29 +17,12 @@ h1{
   padding:10px;
 }
 
-.section{
-  margin:10px;
-  padding:10px;
-  background:#1e293b;
-  border-radius:10px;
-}
-
 .card{
-  background:#334155;
-  padding:12px;
-  margin:8px 0;
-  border-radius:8px;
+  background:#1e293b;
+  padding:15px;
+  margin:10px;
+  border-radius:10px;
   cursor:pointer;
-}
-
-.btn{
-  background:#3b82f6;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  color:white;
-  margin-top:10px;
-  text-align:center;
 }
 
 #search{
@@ -70,71 +53,34 @@ h1{
 
 <button id="backBtn" onclick="goHome()">⬅ Back</button>
 
-<div id="content"></div>
+<div id="content">Loading...</div>
 
 <script>
 
-// SAFE LOAD
-let saved = JSON.parse(localStorage.getItem("saved") || "[]");
-let points = parseInt(localStorage.getItem("points") || "0");
-
-let currentList = [];
-
-// DATA
-const data = [
-{title:"Sell snacks",desc:"Start small snack business",action:"Start with 20k UGX"},
-{title:"Freelance writing",desc:"Write articles online",action:"Use Fiverr or Upwork"},
-{title:"Scholarship abroad",desc:"Study free overseas",action:"Search scholarships online"},
-{title:"Laundry service",desc:"Wash clothes for money",action:"Start locally in your area"},
-{title:"Graphic design",desc:"Design posters and logos",action:"Learn using Canva"}
+// SAFE DATA
+var data = [
+"Sell snacks",
+"Freelance writing",
+"Laundry business",
+"Graphic design",
+"Scholarships abroad"
 ];
+
+var currentList = [];
+var saved = [];
 
 // HOME
 function showHome(){
   document.getElementById("backBtn").style.display="none";
 
-  let daily = data[Math.floor(Math.random()*data.length)];
-
-  let html = "";
-
-  html += `
-  <div class="section">
-    <h3>👋 Welcome</h3>
-    <p>Let’s improve your life today</p>
-    <p>🏆 Points: ${points}</p>
-  </div>
-  `;
-
-  html += `
-  <div class="section">
-    <h3>🔥 Daily Opportunity</h3>
-    <div class="card" onclick="showDetail('${daily.title}')">${daily.title}</div>
-  </div>
-  `;
-
-  html += `
-  <div class="section">
-    <h3>📈 Trending</h3>
-  `;
-
-  data.slice(0,3).forEach(i=>{
-    html += `<div class="card" onclick="showDetail('${i.title}')">${i.title}</div>`;
-  });
-
-  html += `</div>`;
-
-  html += `
-  <div class="section">
-    <h3>🌍 Explore</h3>
-    <div class="card" onclick="openList()">All Opportunities</div>
-    <div class="card" onclick="showSaved()">⭐ Saved</div>
-  </div>
-  `;
+  var html = "";
+  html += "<div class='card' onclick='openList()'>🌍 Opportunities</div>";
+  html += "<div class='card' onclick='showSaved()'>⭐ Saved</div>";
 
   document.getElementById("content").innerHTML = html;
 }
 
-// LIST
+// OPEN LIST
 function openList(){
   document.getElementById("backBtn").style.display="block";
   currentList = data;
@@ -143,67 +89,43 @@ function openList(){
 
 // DISPLAY
 function display(list){
-  if(list.length===0){
-    document.getElementById("content").innerHTML="<div class='card'>No results</div>";
-    return;
-  }
+  var html = "";
 
-  let html = "";
-  list.forEach(i=>{
-    html += `<div class="card" onclick="showDetail('${i.title}')">${i.title}</div>`;
-  });
+  if(list.length === 0){
+    html = "<div class='card'>No results</div>";
+  } else {
+    for(var i=0;i<list.length;i++){
+      html += "<div class='card'>"+list[i]+"</div>";
+    }
+  }
 
   document.getElementById("content").innerHTML = html;
 }
 
-// DETAIL
-function showDetail(title){
-  let item = data.find(i=>i.title===title);
+// SEARCH
+function search(){
+  var input = document.getElementById("search").value.toLowerCase();
 
-  points++;
-  localStorage.setItem("points", points);
+  var results = [];
 
-  document.getElementById("content").innerHTML = `
-    <div class="section">
-      <h2>${item.title}</h2>
-      <p>${item.desc}</p>
-      <div class="btn" onclick="saveItem('${item.title}')">⭐ Save</div>
-      <div class="btn">${item.action}</div>
-    </div>
-  `;
-}
-
-// SAVE
-function saveItem(title){
-  let item = data.find(i=>i.title===title);
-
-  if(!saved.find(i=>i.title===title)){
-    saved.push(item);
-    localStorage.setItem("saved", JSON.stringify(saved));
-    alert("Saved!");
+  for(var i=0;i<data.length;i++){
+    if(data[i].toLowerCase().includes(input)){
+      results.push(data[i]);
+    }
   }
+
+  display(results);
 }
 
 // SAVED
 function showSaved(){
   document.getElementById("backBtn").style.display="block";
 
-  if(saved.length===0){
-    document.getElementById("content").innerHTML="<div class='card'>No saved items</div>";
+  if(saved.length === 0){
+    document.getElementById("content").innerHTML = "<div class='card'>No saved items</div>";
   } else {
     display(saved);
   }
-}
-
-// SEARCH
-function search(){
-  let input = document.getElementById("search").value.toLowerCase();
-
-  let results = data.filter(i =>
-    i.title.toLowerCase().includes(input)
-  );
-
-  display(results);
 }
 
 // BACK
