@@ -15,7 +15,16 @@ body {
 /* Header */
 h1 {
   text-align:center;
-  padding:15px;
+  padding:10px;
+}
+
+/* Search */
+#search {
+  width:90%;
+  margin:10px;
+  padding:10px;
+  border-radius:8px;
+  border:none;
 }
 
 /* Cards */
@@ -24,6 +33,15 @@ h1 {
   padding:15px;
   margin:10px;
   border-radius:10px;
+  cursor:pointer;
+  position:relative;
+}
+
+/* Star button */
+.star {
+  position:absolute;
+  right:10px;
+  top:10px;
   cursor:pointer;
 }
 
@@ -44,22 +62,60 @@ h1 {
 
 <h1>🚀 Opportune</h1>
 
+<input id="search" placeholder="Search opportunities..." onkeyup="search()">
+
 <button id="backBtn" onclick="goHome()">⬅ Back</button>
 
 <div id="content"></div>
 
 <script>
 
-// HOME LOAD
+let currentList = [];
+let saved = [];
+
+// HOME
 function showHome(){
   document.getElementById("backBtn").style.display = "none";
+  document.getElementById("search").value = "";
 
   document.getElementById("content").innerHTML = `
     <div class="card" onclick="showJobs()">💼 Jobs</div>
     <div class="card" onclick="showHustles()">💰 Side Hustles</div>
     <div class="card" onclick="showScholarships()">🎓 Scholarships</div>
     <div class="card" onclick="showBusiness()">🚀 Business Ideas</div>
+    <div class="card" onclick="showSaved()">⭐ Saved</div>
   `;
+}
+
+// DISPLAY LIST
+function display(list){
+  currentList = list;
+
+  document.getElementById("content").innerHTML = list.map(item => `
+    <div class="card">
+      ${item}
+      <span class="star" onclick="saveItem('${item}')">⭐</span>
+    </div>
+  `).join("");
+}
+
+// SAVE
+function saveItem(item){
+  if(!saved.includes(item)){
+    saved.push(item);
+    alert("Saved!");
+  }
+}
+
+// SEARCH
+function search(){
+  let input = document.getElementById("search").value.toLowerCase();
+
+  let filtered = currentList.filter(item =>
+    item.toLowerCase().includes(input)
+  );
+
+  display(filtered);
 }
 
 // BACK
@@ -67,55 +123,53 @@ function goHome(){
   showHome();
 }
 
-// JOBS
+// DATA
 function showJobs(){
   document.getElementById("backBtn").style.display = "block";
-
-  document.getElementById("content").innerHTML = `
-    <div class="card">Shop assistant job</div>
-    <div class="card">Online typing job</div>
-    <div class="card">Delivery helper</div>
-    <div class="card">Freelance writing</div>
-  `;
+  display([
+    "Shop assistant job",
+    "Online typing job",
+    "Delivery helper",
+    "Freelance writing"
+  ]);
 }
 
-// HUSTLES
 function showHustles(){
   document.getElementById("backBtn").style.display = "block";
-
-  document.getElementById("content").innerHTML = `
-    <div class="card">Sell snacks</div>
-    <div class="card">Phone charging business</div>
-    <div class="card">Poster design</div>
-    <div class="card">Resell clothes</div>
-  `;
+  display([
+    "Sell snacks",
+    "Phone charging business",
+    "Poster design",
+    "Resell clothes"
+  ]);
 }
 
-// SCHOLARSHIPS
 function showScholarships(){
   document.getElementById("backBtn").style.display = "block";
-
-  document.getElementById("content").innerHTML = `
-    <div class="card">Government scholarships</div>
-    <div class="card">Free online courses</div>
-    <div class="card">Study abroad programs</div>
-    <div class="card">NGO support</div>
-  `;
+  display([
+    "Government scholarships",
+    "Free online courses",
+    "Study abroad programs",
+    "NGO education support"
+  ]);
 }
 
-// BUSINESS
 function showBusiness(){
   document.getElementById("backBtn").style.display = "block";
-
-  document.getElementById("content").innerHTML = `
-    <div class="card">Food business</div>
-    <div class="card">Laundry service</div>
-    <div class="card">Mobile money agent</div>
-    <div class="card">Printing business</div>
-  `;
+  display([
+    "Food business",
+    "Laundry service",
+    "Mobile money agent",
+    "Printing business"
+  ]);
 }
 
-// RUN APP
+function showSaved(){
+  document.getElementById("backBtn").style.display = "block";
+  display(saved.length ? saved : ["No saved items"]);
+}
+
+// START
 showHome();
 
 </script>
