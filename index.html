@@ -10,115 +10,124 @@ body{
   background:#0f172a;
   color:white;
 }
-h1{text-align:center;padding:10px;}
-.section{margin:10px;padding:10px;background:#1e293b;border-radius:10px;}
-.card{background:#334155;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;}
-.btn{background:#3b82f6;padding:10px;border:none;border-radius:8px;color:white;margin-top:10px;text-align:center;}
-#search{width:90%;margin:10px;padding:10px;border-radius:8px;border:none;}
-#backBtn{display:none;margin:10px;padding:10px;background:#3b82f6;border:none;color:white;border-radius:8px;}
-li{margin:5px 0;}
+h1{
+  text-align:center;
+  padding:10px;
+}
+.section{
+  margin:10px;
+  padding:10px;
+  background:#1e293b;
+  border-radius:10px;
+}
+.card{
+  background:#334155;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
+  cursor:pointer;
+}
+.btn{
+  background:#3b82f6;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  color:white;
+  margin-top:10px;
+  text-align:center;
+}
+#search{
+  width:90%;
+  margin:10px;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+#backBtn{
+  display:none;
+  margin:10px;
+  padding:10px;
+  background:#3b82f6;
+  border:none;
+  color:white;
+  border-radius:8px;
+}
+.level{
+  text-align:center;
+  font-weight:bold;
+  margin:10px 0;
+}
+.daily{
+  margin:10px;
+  padding:10px;
+  background:#2563eb;
+  border-radius:10px;
+  text-align:center;
+}
 </style>
 </head>
 <body>
 
 <h1>🚀 Opportune</h1>
+<div class="level" id="levelDisplay">Level 1</div>
 
 <input id="search" placeholder="Search opportunities..." onkeyup="searchOpportunities()">
 <button id="backBtn" onclick="goHome()">⬅ Back</button>
+<div class="daily" id="dailySuggestion"></div>
 <div id="content"></div>
 
 <script>
-// Persistent saved items
+// Persistent data
 let saved = JSON.parse(localStorage.getItem("saved") || "[]");
 let currentList = [];
+let level = parseInt(localStorage.getItem("level") || "1");
 
-// Opportunities with full details & multiple methods
+// Opportunities database
 const opportunities = [
-{
-title:"Social Media Management",
-problem:"skill",
-desc:"Manage social media accounts for businesses, influencers, or personal brands.",
-cost:"Free - Minimal (phone + internet)",
-methods:[
-"1. Learn basic content creation using Canva or Photoshop.",
-"2. Create posting schedules for clients.",
-"3. Engage with followers on posts and messages.",
-"4. Track metrics like reach, likes, shares.",
-"5. Offer to run small ads for clients.",
-"6. Learn hashtag and trend optimization.",
-"7. Create content calendars.",
-"8. Offer package deals (weekly or monthly).",
-"9. Start with friends or local businesses to build portfolio.",
-"10. Use free analytics tools to improve performance."
-],
-tip:"Start small, specialize in one platform, and gradually expand."
-},
-{
-title:"Sell snacks at school",
-problem:"money",
-desc:"Start a small snack business and earn daily income.",
-cost:"10,000 - 50,000 UGX",
-methods:[
-"1. Buy biscuits, sweets, and juice.",
-"2. Identify busy spots at school or roadside.",
-"3. Sell during breaks when students gather.",
-"4. Keep prices affordable.",
-"5. Reinvent profits into more stock.",
-"6. Offer combos (drink + snack) for value.",
-"7. Maintain hygiene and presentation.",
-"8. Ask friends to help promote.",
-"9. Track which snacks sell fast.",
-"10. Adjust stock based on demand."
-],
-tip:"Consistency and timing are key."
-},
-{
-title:"Study abroad scholarship",
-problem:"study",
-desc:"Apply for scholarships and study for free.",
-cost:"Mostly free",
-methods:[
-"1. Search online for fully funded scholarships.",
-"2. Check eligibility criteria carefully.",
-"3. Prepare required documents early.",
-"4. Write a strong personal statement.",
-"5. Request recommendation letters.",
-"6. Apply before deadlines.",
-"7. Follow up with scholarship organizations.",
-"8. Prepare for interviews if needed.",
-"9. Use scholarship portals like scholarship.com.",
-"10. Apply to multiple scholarships for higher chances."
-],
-tip:"Be thorough and early with your applications."
-}
+  {title:"Sell snacks at school",problem:"money",desc:"Start a small snack business.",cost:"10k-50k UGX",steps:"Buy biscuits and juice, sell at school or roadside.",tip:"Sell during break time."},
+  {title:"Laundry service",problem:"money",desc:"Wash clothes for people and get paid.",cost:"0-20k UGX",steps:"Charge per cloth, deliver on time.",tip:"Target busy people or students."},
+  {title:"Study abroad scholarship",problem:"study",desc:"Apply for scholarships to study for free.",cost:"Mostly free",steps:"Search online, apply early, prepare documents.",tip:"Look for fully funded scholarships."},
+  {title:"Graphic design",problem:"skill",desc:"Learn design and make money creating posters.",cost:"Free (phone apps)",steps:"Learn Canva, practice, offer services.",tip:"Start with small jobs."},
+  {title:"Phone charging business",problem:"money",desc:"Charge phones at busy areas.",cost:"20k-100k UGX",steps:"Get cable, find location, charge per phone.",tip:"Choose places with no electricity."},
+  {title:"Freelance writing",problem:"skill",desc:"Write articles online.",cost:"Free",steps:"Register on freelance sites, start writing.",tip:"Start with short articles."},
+  {title:"Online tutoring",problem:"study",desc:"Teach students online.",cost:"Free",steps:"Choose subjects, find students online.",tip:"Use video calls for sessions."},
+  {title:"Blogging for income",problem:"money",desc:"Start a blog and earn from ads.",cost:"Low",steps:"Choose niche, create content, monetize.",tip:"Consistency is key."}
 ];
 
-// Display home
+// Daily suggestion
+function showDaily(){
+  let daily = opportunities[Math.floor(Math.random()*opportunities.length)];
+  document.getElementById("dailySuggestion").innerHTML = `📌 Daily Opportunity: <b>${daily.title}</b>`;
+}
+showDaily();
+
+// Update level display
+function updateLevelDisplay(){
+  document.getElementById("levelDisplay").innerText = `Level ${level}`;
+  localStorage.setItem("level", level);
+}
+
+// Home screen
 function showHome(){
   document.getElementById("backBtn").style.display="none";
   let html = `
-  <div class="section">
-    <h3>👋 Welcome</h3>
-    <p>Find opportunities to improve your life</p>
-  </div>
-  <div class="section">
-    <h3>🎯 Choose Your Situation</h3>
+  <div class="section"><h3>👋 Welcome</h3><p>Find opportunities to improve your life</p></div>
+  <div class="section"><h3>🎯 Choose Your Situation</h3>
     <div class="card" onclick="filterByProblem('money')">💰 I need money</div>
     <div class="card" onclick="filterByProblem('study')">🎓 I want to study</div>
     <div class="card" onclick="filterByProblem('skill')">🧠 I want skills</div>
   </div>
-  <div class="section">
-    <h3>🌍 Explore</h3>
+  <div class="section"><h3>🌍 Explore</h3>
     <div class="card" onclick="openAll()">All Opportunities</div>
     <div class="card" onclick="showSaved()">⭐ Saved</div>
   </div>`;
   document.getElementById("content").innerHTML = html;
 }
 
-// Filter
+// Filter by problem
 function filterByProblem(type){
   document.getElementById("backBtn").style.display="block";
-  currentList = opportunities.filter(item=>item.problem===type);
+  currentList = opportunities.filter(item => item.problem === type);
   displayList(currentList);
 }
 
@@ -131,10 +140,7 @@ function openAll(){
 
 // Display list
 function displayList(list){
-  if(list.length===0){
-    document.getElementById("content").innerHTML="<div class='card'>No results</div>";
-    return;
-  }
+  if(list.length === 0){document.getElementById("content").innerHTML = "<div class='card'>No results</div>";return;}
   let html = "";
   list.forEach(item=>{
     html += `<div class="card" onclick="showDetail('${item.title}')">${item.title}</div>`;
@@ -142,42 +148,32 @@ function displayList(list){
   document.getElementById("content").innerHTML = html;
 }
 
-// Show details
+// Show detail
 function showDetail(title){
   let item = opportunities.find(i=>i.title===title) || saved.find(i=>i.title===title);
-  let methodsHtml = "<ul>";
-  item.methods.forEach(m=>{methodsHtml += `<li>${m}</li>`;});
-  methodsHtml += "</ul>";
-
   document.getElementById("content").innerHTML = `
     <div class="section">
       <h2>${item.title}</h2>
       <p>${item.desc}</p>
       <p><b>💰 Cost:</b> ${item.cost}</p>
-      <p><b>📌 Methods:</b> ${methodsHtml}</p>
+      <p><b>📌 Steps:</b> ${item.steps}</p>
       <p><b>💡 Tip:</b> ${item.tip}</p>
       <div class="btn" onclick="saveItem('${item.title}')">⭐ Save</div>
     </div>`;
 }
 
-// Save
+// Save opportunity
 function saveItem(title){
   let item = opportunities.find(i=>i.title===title);
-  if(!saved.find(i=>i.title===title)){
-    saved.push(item);
-    localStorage.setItem("saved",JSON.stringify(saved));
-    alert("Saved!");
-  } else {
-    alert("Already saved");
-  }
+  if(!saved.find(i=>i.title===title)){saved.push(item); localStorage.setItem("saved",JSON.stringify(saved)); alert("Saved!"); level++; updateLevelDisplay();}
+  else{alert("Already saved");}
 }
 
 // Show saved
 function showSaved(){
   document.getElementById("backBtn").style.display="block";
-  if(saved.length===0){
-    document.getElementById("content").innerHTML="<div class='card'>No saved items</div>";
-  } else displayList(saved);
+  if(saved.length===0){document.getElementById("content").innerHTML="<div class='card'>No saved items</div>";}
+  else{displayList(saved);}
 }
 
 // Search
@@ -187,11 +183,9 @@ function searchOpportunities(){
   displayList(results);
 }
 
-// Back home
+// Back
 function goHome(){showHome();}
 
 // Start
+updateLevelDisplay();
 showHome();
-</script>
-</body>
-</html>
