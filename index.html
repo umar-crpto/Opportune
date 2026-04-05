@@ -25,7 +25,6 @@ h1{
   padding:12px;
   border-radius:10px;
   border:none;
-  font-size:16px;
 }
 
 /* Cards */
@@ -34,22 +33,29 @@ h1{
   padding:15px;
   margin:10px;
   border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.3);
-}
-
-.clickable{
   cursor:pointer;
-  transition:0.2s;
 }
 
-.clickable:active{
-  transform:scale(0.97);
+/* Detail box */
+#detail{
+  padding:15px;
+}
+
+/* Buttons */
+.btn{
+  display:block;
+  margin:10px;
+  padding:12px;
+  background:#3b82f6;
+  border:none;
+  color:white;
+  border-radius:8px;
+  text-align:center;
 }
 
 /* Star */
 .star{
   float:right;
-  cursor:pointer;
 }
 
 /* Back */
@@ -69,7 +75,7 @@ h1{
 
 <h1>🚀 Opportune</h1>
 
-<input id="search" placeholder="Search opportunities..." onkeyup="search()">
+<input id="search" placeholder="Search..." onkeyup="search()">
 
 <button id="backBtn" onclick="goHome()">⬅ Back</button>
 
@@ -77,31 +83,44 @@ h1{
 
 <script>
 
-// DATA
-const data = {
-jobs: ["Shop assistant","Delivery job","Office assistant","Freelance writing","Retail worker"],
-
-hustles: ["Sell snacks","Phone charging","Poster design","Resell clothes","Car washing"],
-
-scholarships: ["Government scholarship","Study abroad","Free courses","NGO support","Online certificates"],
-
-business: ["Food business","Laundry service","Mobile money","Printing","Salon business"],
-
-skills: ["Learn coding","Graphic design","Video editing","Public speaking","Marketing"],
-
-online: ["Fiverr gigs","Upwork jobs","Typing online","Selling on Jumia","Affiliate marketing"],
-
-digital: ["Social media management","Content creation","YouTube automation","Blogging","SEO"],
-
-competitions: ["Essay competitions","Tech contests","Startup competitions","Hackathons","School contests"],
-
-ideas: ["Start YouTube channel","Sell ebooks","Create app","Dropshipping","Online tutoring"],
-
-learning: ["Free YouTube courses","Google certificates","Coursera","Khan Academy","Skillshare"]
-};
+// LOAD SAVED
+let saved = JSON.parse(localStorage.getItem("saved")) || [];
 
 let currentList = [];
-let saved = [];
+
+// DATA (REALISTIC)
+const data = [
+{
+title:"Sell snacks at school",
+desc:"Buy snacks in bulk and sell at school for profit.",
+action:"Start with 20,000 UGX. Buy biscuits and drinks."
+},
+{
+title:"Freelance writing",
+desc:"Write articles online and get paid.",
+action:"Use sites like Fiverr or Upwork."
+},
+{
+title:"Study abroad scholarship",
+desc:"Apply for scholarships to study in another country.",
+action:"Search: 'Fully funded scholarships 2026'"
+},
+{
+title:"Phone charging business",
+desc:"Charge phones for people at a fee.",
+action:"Get extension and power source."
+},
+{
+title:"Laundry service",
+desc:"Wash clothes for people and earn money.",
+action:"Start in your area, charge per cloth."
+},
+{
+title:"Graphic design",
+desc:"Design posters and logos.",
+action:"Learn using Canva or YouTube."
+}
+];
 
 // HOME
 function showHome(){
@@ -109,25 +128,16 @@ function showHome(){
   document.getElementById("search").value="";
 
   document.getElementById("content").innerHTML = `
-    <div class="card clickable" onclick="openList(data.jobs)">💼 Jobs</div>
-    <div class="card clickable" onclick="openList(data.hustles)">💰 Side Hustles</div>
-    <div class="card clickable" onclick="openList(data.scholarships)">🎓 Scholarships</div>
-    <div class="card clickable" onclick="openList(data.business)">🚀 Business</div>
-    <div class="card clickable" onclick="openList(data.skills)">🧠 Skills</div>
-    <div class="card clickable" onclick="openList(data.online)">🌐 Online Work</div>
-    <div class="card clickable" onclick="openList(data.digital)">📱 Digital Skills</div>
-    <div class="card clickable" onclick="openList(data.competitions)">🏆 Competitions</div>
-    <div class="card clickable" onclick="openList(data.ideas)">💡 Ideas</div>
-    <div class="card clickable" onclick="openList(data.learning)">📚 Free Learning</div>
-    <div class="card clickable" onclick="showSaved()">⭐ Saved</div>
+    <div class="card" onclick="openList()">🌍 Opportunities</div>
+    <div class="card" onclick="showSaved()">⭐ Saved</div>
   `;
 }
 
 // OPEN LIST
-function openList(list){
+function openList(){
   document.getElementById("backBtn").style.display="block";
-  currentList = list;
-  display(list);
+  currentList = data;
+  display(data);
 }
 
 // DISPLAY
@@ -138,49 +148,8 @@ function display(list){
   }
 
   document.getElementById("content").innerHTML = list.map(item => `
-    <div class="card">
-      ${item}
-      <span class="star" onclick="saveItem('${item}', event)">⭐</span>
+    <div class="card" onclick="showDetail('${item.title}')">
+      ${item.title}
+      <span class="star">⭐</span>
     </div>
   `).join("");
-}
-
-// SAVE
-function saveItem(item,event){
-  event.stopPropagation();
-  if(!saved.includes(item)){
-    saved.push(item);
-    alert("Saved!");
-  }
-}
-
-// SEARCH
-function search(){
-  let input=document.getElementById("search").value.toLowerCase();
-
-  let results=currentList.filter(item =>
-    item.toLowerCase().includes(input)
-  );
-
-  display(results);
-}
-
-// SAVED
-function showSaved(){
-  document.getElementById("backBtn").style.display="block";
-  currentList=saved;
-  display(saved.length?saved:["No saved items"]);
-}
-
-// BACK
-function goHome(){
-  showHome();
-}
-
-// START
-showHome();
-
-</script>
-
-</body>
-</html>
