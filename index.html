@@ -10,65 +10,21 @@ body{
   background:#0f172a;
   color:white;
 }
-
-h1{
-  text-align:center;
-  padding:10px;
-}
-
-.section{
-  margin:10px;
-  padding:10px;
-  background:#1e293b;
-  border-radius:10px;
-}
-
-.card{
-  background:#334155;
-  padding:12px;
-  margin:8px 0;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.btn{
-  background:#3b82f6;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  color:white;
-  margin-top:10px;
-  text-align:center;
-}
-
-#search{
-  width:90%;
-  margin:10px;
-  padding:10px;
-  border-radius:8px;
-  border:none;
-}
-
-#backBtn{
-  display:none;
-  margin:10px;
-  padding:10px;
-  background:#3b82f6;
-  border:none;
-  color:white;
-  border-radius:8px;
-}
+h1{text-align:center;padding:10px;}
+.section{margin:10px;padding:10px;background:#1e293b;border-radius:10px;}
+.card{background:#334155;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;}
+.btn{background:#3b82f6;padding:10px;border:none;border-radius:8px;color:white;margin-top:10px;text-align:center;}
+#search{width:90%;margin:10px;padding:10px;border-radius:8px;border:none;}
+#backBtn{display:none;margin:10px;padding:10px;background:#3b82f6;border:none;color:white;border-radius:8px;}
+li{margin:5px 0;}
 </style>
 </head>
-
 <body>
 
 <h1>🚀 Opportune</h1>
 
 <input id="search" placeholder="Search opportunities..." onkeyup="searchOpportunities()">
-
 <button id="backBtn" onclick="goHome()">⬅ Back</button>
-
 <div id="content"></div>
 
 <script>
@@ -76,170 +32,166 @@ h1{
 let saved = JSON.parse(localStorage.getItem("saved") || "[]");
 let currentList = [];
 
-// Real detailed opportunities
+// Opportunities with full details & multiple methods
 const opportunities = [
+{
+title:"Social Media Management",
+problem:"skill",
+desc:"Manage social media accounts for businesses, influencers, or personal brands.",
+cost:"Free - Minimal (phone + internet)",
+methods:[
+"1. Learn basic content creation using Canva or Photoshop.",
+"2. Create posting schedules for clients.",
+"3. Engage with followers on posts and messages.",
+"4. Track metrics like reach, likes, shares.",
+"5. Offer to run small ads for clients.",
+"6. Learn hashtag and trend optimization.",
+"7. Create content calendars.",
+"8. Offer package deals (weekly or monthly).",
+"9. Start with friends or local businesses to build portfolio.",
+"10. Use free analytics tools to improve performance."
+],
+tip:"Start small, specialize in one platform, and gradually expand."
+},
 {
 title:"Sell snacks at school",
 problem:"money",
 desc:"Start a small snack business and earn daily income.",
 cost:"10,000 - 50,000 UGX",
-steps:"Buy biscuits and juice, sell at school or roadside, reinvest profits.",
-tip:"Sell during break time where students gather."
-},
-{
-title:"Laundry service",
-problem:"money",
-desc:"Wash clothes for people and get paid.",
-cost:"0 - 20,000 UGX",
-steps:"Start in your area, charge per cloth, deliver on time.",
-tip:"Target busy people or students."
+methods:[
+"1. Buy biscuits, sweets, and juice.",
+"2. Identify busy spots at school or roadside.",
+"3. Sell during breaks when students gather.",
+"4. Keep prices affordable.",
+"5. Reinvent profits into more stock.",
+"6. Offer combos (drink + snack) for value.",
+"7. Maintain hygiene and presentation.",
+"8. Ask friends to help promote.",
+"9. Track which snacks sell fast.",
+"10. Adjust stock based on demand."
+],
+tip:"Consistency and timing are key."
 },
 {
 title:"Study abroad scholarship",
 problem:"study",
 desc:"Apply for scholarships and study for free.",
 cost:"Mostly free",
-steps:"Search online, apply early, prepare documents.",
-tip:"Look for fully funded scholarships."
-},
-{
-title:"Graphic design",
-problem:"skill",
-desc:"Learn design and make money creating posters.",
-cost:"Free (use phone apps)",
-steps:"Learn Canva, practice daily, offer services.",
-tip:"Start with small jobs for friends."
-},
-{
-title:"Phone charging business",
-problem:"money",
-desc:"Charge phones at a fee in busy areas.",
-cost:"20,000 - 100,000 UGX",
-steps:"Get extension cable, find location, charge per phone.",
-tip:"Choose places with no electricity."
+methods:[
+"1. Search online for fully funded scholarships.",
+"2. Check eligibility criteria carefully.",
+"3. Prepare required documents early.",
+"4. Write a strong personal statement.",
+"5. Request recommendation letters.",
+"6. Apply before deadlines.",
+"7. Follow up with scholarship organizations.",
+"8. Prepare for interviews if needed.",
+"9. Use scholarship portals like scholarship.com.",
+"10. Apply to multiple scholarships for higher chances."
+],
+tip:"Be thorough and early with your applications."
 }
 ];
 
-// Display home screen
+// Display home
 function showHome(){
   document.getElementById("backBtn").style.display="none";
-
-  let html = "";
-
-  html += `
+  let html = `
   <div class="section">
     <h3>👋 Welcome</h3>
     <p>Find opportunities to improve your life</p>
   </div>
-  `;
-
-  html += `
   <div class="section">
     <h3>🎯 Choose Your Situation</h3>
     <div class="card" onclick="filterByProblem('money')">💰 I need money</div>
     <div class="card" onclick="filterByProblem('study')">🎓 I want to study</div>
     <div class="card" onclick="filterByProblem('skill')">🧠 I want skills</div>
   </div>
-  `;
-
-  html += `
   <div class="section">
     <h3>🌍 Explore</h3>
     <div class="card" onclick="openAll()">All Opportunities</div>
     <div class="card" onclick="showSaved()">⭐ Saved</div>
-  </div>
-  `;
-
+  </div>`;
   document.getElementById("content").innerHTML = html;
 }
 
-// Filter opportunities by problem
+// Filter
 function filterByProblem(type){
   document.getElementById("backBtn").style.display="block";
-  currentList = opportunities.filter(item => item.problem === type);
+  currentList = opportunities.filter(item=>item.problem===type);
   displayList(currentList);
 }
 
-// Open all opportunities
+// Open all
 function openAll(){
   document.getElementById("backBtn").style.display="block";
   currentList = opportunities;
   displayList(opportunities);
 }
 
-// Display a list of opportunities
+// Display list
 function displayList(list){
-  if(list.length === 0){
-    document.getElementById("content").innerHTML = "<div class='card'>No results</div>";
+  if(list.length===0){
+    document.getElementById("content").innerHTML="<div class='card'>No results</div>";
     return;
   }
-
   let html = "";
   list.forEach(item=>{
     html += `<div class="card" onclick="showDetail('${item.title}')">${item.title}</div>`;
   });
-
   document.getElementById("content").innerHTML = html;
 }
 
-// Show details of a single opportunity
+// Show details
 function showDetail(title){
   let item = opportunities.find(i=>i.title===title) || saved.find(i=>i.title===title);
+  let methodsHtml = "<ul>";
+  item.methods.forEach(m=>{methodsHtml += `<li>${m}</li>`;});
+  methodsHtml += "</ul>";
 
   document.getElementById("content").innerHTML = `
     <div class="section">
       <h2>${item.title}</h2>
       <p>${item.desc}</p>
       <p><b>💰 Cost:</b> ${item.cost}</p>
-      <p><b>📌 Steps:</b> ${item.steps}</p>
+      <p><b>📌 Methods:</b> ${methodsHtml}</p>
       <p><b>💡 Tip:</b> ${item.tip}</p>
-
       <div class="btn" onclick="saveItem('${item.title}')">⭐ Save</div>
-    </div>
-  `;
+    </div>`;
 }
 
-// Save opportunity to localStorage
+// Save
 function saveItem(title){
   let item = opportunities.find(i=>i.title===title);
   if(!saved.find(i=>i.title===title)){
     saved.push(item);
-    localStorage.setItem("saved", JSON.stringify(saved));
+    localStorage.setItem("saved",JSON.stringify(saved));
     alert("Saved!");
   } else {
     alert("Already saved");
   }
 }
 
-// Show saved opportunities
+// Show saved
 function showSaved(){
   document.getElementById("backBtn").style.display="block";
-
-  if(saved.length === 0){
-    document.getElementById("content").innerHTML = "<div class='card'>No saved items</div>";
-  } else {
-    displayList(saved);
-  }
+  if(saved.length===0){
+    document.getElementById("content").innerHTML="<div class='card'>No saved items</div>";
+  } else displayList(saved);
 }
 
-// Search functionality
+// Search
 function searchOpportunities(){
   let input = document.getElementById("search").value.toLowerCase();
-  let results = opportunities.filter(item =>
-    item.title.toLowerCase().includes(input)
-  );
+  let results = opportunities.filter(item=>item.title.toLowerCase().includes(input));
   displayList(results);
 }
 
-// Back to home
-function goHome(){
-  showHome();
-}
+// Back home
+function goHome(){showHome();}
 
-// Start the app
+// Start
 showHome();
-
 </script>
-
 </body>
-  </html>
+</html>
