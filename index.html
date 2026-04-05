@@ -5,54 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+body{
   margin:0;
-  font-family: Arial;
+  font-family:Arial;
   background:#0f172a;
   color:white;
 }
 
 /* Header */
-h1 {
+h1{
   text-align:center;
   padding:10px;
 }
 
 /* Search */
-#search {
+#search{
   width:90%;
   margin:10px;
-  padding:10px;
+  padding:12px;
   border-radius:8px;
   border:none;
+  font-size:16px;
 }
 
 /* Cards */
-.card {
+.card{
   background:#1e293b;
   padding:15px;
   margin:10px;
   border-radius:10px;
-  cursor:pointer;
-  position:relative;
 }
 
-/* Star button */
-.star {
-  position:absolute;
-  right:10px;
-  top:10px;
+/* Clickable */
+.clickable{
+  cursor:pointer;
+}
+
+/* Star */
+.star{
+  float:right;
   cursor:pointer;
 }
 
 /* Back button */
-#backBtn {
+#backBtn{
   display:none;
   margin:10px;
   padding:10px;
   background:#3b82f6;
-  color:white;
   border:none;
+  color:white;
   border-radius:5px;
 }
 </style>
@@ -62,7 +64,7 @@ h1 {
 
 <h1>🚀 Opportune</h1>
 
-<input id="search" placeholder="Search opportunities..." onkeyup="search()">
+<input id="search" placeholder="Search..." onkeyup="search()">
 
 <button id="backBtn" onclick="goHome()">⬅ Back</button>
 
@@ -70,103 +72,117 @@ h1 {
 
 <script>
 
+// DATA
+const jobs = [
+"Shop assistant job",
+"Online typing job",
+"Delivery helper",
+"Freelance writing"
+];
+
+const hustles = [
+"Sell snacks",
+"Phone charging business",
+"Poster design",
+"Resell clothes"
+];
+
+const scholarships = [
+"Government scholarships",
+"Free online courses",
+"Study abroad programs",
+"NGO education support"
+];
+
+const business = [
+"Food business",
+"Laundry service",
+"Mobile money agent",
+"Printing business"
+];
+
 let currentList = [];
 let saved = [];
 
 // HOME
 function showHome(){
-  document.getElementById("backBtn").style.display = "none";
-  document.getElementById("search").value = "";
+  document.getElementById("backBtn").style.display="none";
+  document.getElementById("search").value="";
 
   document.getElementById("content").innerHTML = `
-    <div class="card" onclick="showJobs()">💼 Jobs</div>
-    <div class="card" onclick="showHustles()">💰 Side Hustles</div>
-    <div class="card" onclick="showScholarships()">🎓 Scholarships</div>
-    <div class="card" onclick="showBusiness()">🚀 Business Ideas</div>
-    <div class="card" onclick="showSaved()">⭐ Saved</div>
+    <div class="card clickable" onclick="openList(jobs)">💼 Jobs</div>
+    <div class="card clickable" onclick="openList(hustles)">💰 Side Hustles</div>
+    <div class="card clickable" onclick="openList(scholarships)">🎓 Scholarships</div>
+    <div class="card clickable" onclick="openList(business)">🚀 Business</div>
+    <div class="card clickable" onclick="showSaved()">⭐ Saved</div>
   `;
 }
 
-// DISPLAY LIST
-function display(list){
+// OPEN LIST
+function openList(list){
+  document.getElementById("backBtn").style.display="block";
   currentList = list;
+  display(list);
+}
+
+// DISPLAY
+function display(list){
+  if(list.length === 0){
+    document.getElementById("content").innerHTML = "<div class='card'>No results</div>";
+    return;
+  }
 
   document.getElementById("content").innerHTML = list.map(item => `
     <div class="card">
       ${item}
-      <span class="star" onclick="saveItem('${item}')">⭐</span>
+      <span class="star" onclick="saveItem('${item}', event)">⭐</span>
     </div>
   `).join("");
 }
 
-// SAVE
-function saveItem(item){
+// SAVE (FIXED)
+function saveItem(item, event){
+  event.stopPropagation();
+
   if(!saved.includes(item)){
     saved.push(item);
     alert("Saved!");
+  } else {
+    alert("Already saved");
   }
 }
 
-// SEARCH
+// SEARCH (FIXED)
 function search(){
   let input = document.getElementById("search").value.toLowerCase();
 
-  let filtered = currentList.filter(item =>
+  if(input === ""){
+    display(currentList);
+    return;
+  }
+
+  let results = currentList.filter(item =>
     item.toLowerCase().includes(input)
   );
 
-  display(filtered);
+  display(results);
+}
+
+// SHOW SAVED
+function showSaved(){
+  document.getElementById("backBtn").style.display="block";
+  currentList = saved;
+
+  if(saved.length === 0){
+    display(["No saved items"]);
+  } else {
+    display(saved);
+  }
 }
 
 // BACK
 function goHome(){
   showHome();
-}
-
-// DATA
-function showJobs(){
-  document.getElementById("backBtn").style.display = "block";
-  display([
-    "Shop assistant job",
-    "Online typing job",
-    "Delivery helper",
-    "Freelance writing"
-  ]);
-}
-
-function showHustles(){
-  document.getElementById("backBtn").style.display = "block";
-  display([
-    "Sell snacks",
-    "Phone charging business",
-    "Poster design",
-    "Resell clothes"
-  ]);
-}
-
-function showScholarships(){
-  document.getElementById("backBtn").style.display = "block";
-  display([
-    "Government scholarships",
-    "Free online courses",
-    "Study abroad programs",
-    "NGO education support"
-  ]);
-}
-
-function showBusiness(){
-  document.getElementById("backBtn").style.display = "block";
-  display([
-    "Food business",
-    "Laundry service",
-    "Mobile money agent",
-    "Printing business"
-  ]);
-}
-
-function showSaved(){
-  document.getElementById("backBtn").style.display = "block";
-  display(saved.length ? saved : ["No saved items"]);
 }
 
 // START
