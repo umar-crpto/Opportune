@@ -4,42 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Opportune</title>
-
 <style>
 body { margin:0; font-family:Arial; background:#0f172a; color:white; }
-
-/* Splash Screen */
-#splash {
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:#0f172a;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:40px;
-  font-weight:bold;
-  z-index:9999;
-}
-
-/* Main App */
-#app { display:none; }
-
+#splash { position:fixed; width:100%; height:100%; background:#0f172a; display:flex; justify-content:center; align-items:center; font-size:40px; font-weight:bold; z-index:9999; }
+#app { display:none; padding:0 10px; }
 h1 { text-align:center; padding:15px; }
-
-.section { margin:10px; padding:12px; background:#1e293b; border-radius:12px; }
+.section { margin:10px 0; padding:12px; background:#1e293b; border-radius:12px; }
 .card { background:#334155; padding:12px; margin:8px 0; border-radius:10px; cursor:pointer; }
 .btn { background:#3b82f6; padding:10px; border-radius:8px; color:white; margin-top:10px; text-align:center; }
-
 #search { width:92%; margin:10px; padding:10px; border-radius:8px; border:none; }
 #backBtn { display:none; margin:10px; padding:10px; background:#3b82f6; border:none; color:white; border-radius:8px; }
-
 .level { text-align:center; margin:10px; }
 .daily { margin:10px; padding:10px; background:#2563eb; border-radius:10px; text-align:center; }
 .counter { text-align:center; margin:10px; font-size:14px; color:#94a3b8; }
+.filter { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0; }
+.filterBtn { background:#475569; padding:6px 10px; border-radius:8px; cursor:pointer; }
 </style>
 </head>
-
 <body>
 
 <!-- SPLASH -->
@@ -54,153 +35,145 @@ h1 { text-align:center; padding:15px; }
 <div class="counter" id="visitorCount"></div>
 
 <input id="search" placeholder="Search opportunities..." onkeyup="searchOpportunities()">
-
 <button id="backBtn" onclick="showHome()">⬅ Back</button>
 
 <div class="daily" id="dailySuggestion"></div>
 
 <div id="content"></div>
-
 </div>
 
 <script>
-
-// -------- SPLASH SCREEN --------
+// --- SPLASH ---
 setTimeout(function(){
   document.getElementById("splash").style.display="none";
   document.getElementById("app").style.display="block";
 }, 3000);
 
-// -------- VISITOR COUNTER --------
+// --- VISITOR COUNTER ---
 let visits = localStorage.getItem("visits");
-if(!visits){ visits = 0; }
+if(!visits) visits = 0;
 visits++;
 localStorage.setItem("visits", visits);
 document.getElementById("visitorCount").innerText = "👀 Visits: " + visits;
 
-// -------- STORAGE --------
+// --- STORAGE ---
 let saved = JSON.parse(localStorage.getItem("saved") || "[]");
 let level = parseInt(localStorage.getItem("level") || "1");
 
-// -------- OPPORTUNITIES --------
+// --- OPPORTUNITIES ---
 const opportunities = [
-{title:"Sell snacks",problem:"money",desc:"Sell snacks at school.",cost:"10k-50k UGX",steps:"Buy and sell daily.",tip:"Break time sales."},
-{title:"Laundry service",problem:"money",desc:"Wash clothes for money.",cost:"0-20k",steps:"Charge per cloth.",tip:"Target busy people."},
-{title:"Scholarships abroad",problem:"study",desc:"Study for free.",cost:"Free",steps:"Apply early.",tip:"Look for full funding."},
-{title:"Graphic design",problem:"skill",desc:"Create designs.",cost:"Free",steps:"Use Canva.",tip:"Practice daily."},
-{title:"Freelancing",problem:"online",desc:"Work online.",cost:"Free",steps:"Join sites.",tip:"Start small."},
-{title:"Start a shop",problem:"business",desc:"Open shop.",cost:"50k+",steps:"Sell daily.",tip:"Busy location."}
+{title:"Sell snacks",problem:"money",desc:"Sell snacks at school to earn extra cash.",cost:"10k-50k UGX",steps:"Buy stock, sell during break.",tip:"Target busy students."},
+{title:"Laundry service",problem:"money",desc:"Wash clothes for others.",cost:"0-20k UGX",steps:"Charge per cloth.",tip:"Focus on busy adults."},
+{title:"Scholarships abroad",problem:"study",desc:"Get free education in other countries.",cost:"Free",steps:"Apply early online.",tip:"Check deadlines carefully."},
+{title:"Graphic design",problem:"skill",desc:"Create logos, banners, designs.",cost:"Free",steps:"Learn Canva or Photoshop.",tip:"Build a portfolio."},
+{title:"Freelancing",problem:"online",desc:"Offer services online.",cost:"Free",steps:"Join freelancing sites.",tip:"Start small, deliver quality."},
+{title:"Start a shop",problem:"business",desc:"Open a small shop.",cost:"50k+ UGX",steps:"Sell products daily.",tip:"Choose high-traffic locations."},
+{title:"Online tutoring",problem:"study",desc:"Teach subjects online.",cost:"Free",steps:"Register on tutoring platforms.",tip:"Use Zoom or Google Meet."},
+{title:"Blogging",problem:"online",desc:"Share knowledge or stories.",cost:"Free",steps:"Start a blog website.",tip:"Promote on social media."}
 ];
 
-// -------- DAILY --------
+// --- DAILY SUGGESTION ---
 function showDaily(){
-let d = opportunities[Math.floor(Math.random()*opportunities.length)];
-document.getElementById("dailySuggestion").innerHTML = "📌 Daily: " + d.title;
+  let d = opportunities[Math.floor(Math.random()*opportunities.length)];
+  document.getElementById("dailySuggestion").innerHTML = "📌 Daily: " + d.title;
 }
 
-// -------- LEVEL --------
+// --- LEVEL ---
 function updateLevel(){
-document.getElementById("levelDisplay").innerHTML = "Level " + level;
-localStorage.setItem("level", level);
+  document.getElementById("levelDisplay").innerHTML = "Level " + level;
+  localStorage.setItem("level", level);
 }
 
-// -------- HOME --------
+// --- HOME ---
 function showHome(){
-document.getElementById("backBtn").style.display="none";
-
-document.getElementById("content").innerHTML = `
-<div class="section">
-<h3>👋 Welcome</h3>
-<p>Find opportunities to improve your life</p>
-<p>🔥 Updated today</p>
-</div>
-
-<div class="section">
-<h3>⭐ Popular</h3>
-<div class="card" onclick="showDetail('Sell snacks')">Sell snacks</div>
-<div class="card" onclick="showDetail('Freelancing')">Freelancing</div>
-</div>
-
-<div class="section">
-<h3>🎯 Categories</h3>
-<div class="card" onclick="filter('money')">💰 Money</div>
-<div class="card" onclick="filter('study')">🎓 Study</div>
-<div class="card" onclick="filter('skill')">🧠 Skills</div>
-<div class="card" onclick="filter('online')">🌐 Online</div>
-<div class="card" onclick="filter('business')">🏪 Business</div>
-</div>
-
-<div class="section">
-<div class="card" onclick="showAll()">All Opportunities</div>
-<div class="card" onclick="showSaved()">⭐ Saved</div>
-</div>
-`;
+  document.getElementById("backBtn").style.display="none";
+  document.getElementById("content").innerHTML = `
+    <div class="section"><h3>👋 Welcome</h3><p>Find opportunities to improve your life</p></div>
+    <div class="section"><h3>⭐ Popular</h3>
+      ${opportunities.slice(0,3).map(o=>`<div class="card" onclick="showDetail('${o.title}')">${o.title}</div>`).join('')}
+    </div>
+    <div class="section"><h3>🎯 Categories</h3>
+      <div class="filter">
+        <div class="filterBtn" onclick="filter('money')">💰 Money</div>
+        <div class="filterBtn" onclick="filter('study')">🎓 Study</div>
+        <div class="filterBtn" onclick="filter('skill')">🧠 Skills</div>
+        <div class="filterBtn" onclick="filter('online')">🌐 Online</div>
+        <div class="filterBtn" onclick="filter('business')">🏪 Business</div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="card" onclick="showAll()">All Opportunities</div>
+      <div class="card" onclick="showSaved()">⭐ Saved</div>
+    </div>
+  `;
 }
 
-// -------- FILTER --------
+// --- FILTER ---
 function filter(type){
-document.getElementById("backBtn").style.display="block";
-let list = opportunities.filter(x=>x.problem==type);
-showList(list);
+  document.getElementById("backBtn").style.display="block";
+  let list = opportunities.filter(x=>x.problem==type);
+  showList(list);
 }
 
-// -------- LIST --------
+// --- LIST ---
 function showList(list){
-let html="";
-list.forEach(x=>{
-html += `<div class="card" onclick="showDetail('${x.title}')">${x.title}</div>`;
-});
-document.getElementById("content").innerHTML = html || "No results";
+  if(list.length===0){document.getElementById("content").innerHTML="No results"; return;}
+  let html="";
+  list.forEach(x=>{
+    html += `<div class="card" onclick="showDetail('${x.title}')">${x.title}</div>`;
+  });
+  document.getElementById("content").innerHTML = html;
 }
 
-// -------- DETAIL --------
+// --- DETAIL ---
 function showDetail(title){
-let x = opportunities.find(i=>i.title==title) || saved.find(i=>i.title==title);
-
-document.getElementById("content").innerHTML = `
-<div class="section">
-<h2>${x.title}</h2>
-<p>${x.desc}</p>
-<p><b>💰 Cost:</b> ${x.cost}</p>
-<p><b>📌 Steps:</b> ${x.steps}</p>
-<p><b>💡 Tip:</b> ${x.tip}</p>
-<div class="btn" onclick="save('${x.title}')">⭐ Save</div>
-</div>
-`;
+  let x = opportunities.find(i=>i.title==title) || saved.find(i=>i.title==title);
+  if(!x) return;
+  document.getElementById("backBtn").style.display="block";
+  document.getElementById("content").innerHTML = `
+    <div class="section">
+      <h2>${x.title}</h2>
+      <p>${x.desc}</p>
+      <p><b>💰 Cost:</b> ${x.cost}</p>
+      <p><b>📌 Steps:</b> ${x.steps}</p>
+      <p><b>💡 Tip:</b> ${x.tip}</p>
+      <div class="btn" onclick="save('${x.title}')">⭐ Save</div>
+    </div>
+  `;
 }
 
-// -------- SAVE --------
+// --- SAVE ---
 function save(title){
-let x = opportunities.find(i=>i.title==title);
-if(!saved.find(i=>i.title==title)){
-saved.push(x);
-localStorage.setItem("saved",JSON.stringify(saved));
-level++;
-updateLevel();
-alert("Saved!");
-}else{
-alert("Already saved");
-}
+  let x = opportunities.find(i=>i.title==title);
+  if(!saved.find(i=>i.title==title)){
+    saved.push(x);
+    localStorage.setItem("saved",JSON.stringify(saved));
+    level++;
+    updateLevel();
+    alert("Saved!");
+  }else{alert("Already saved");}
 }
 
-// -------- SAVED --------
+// --- SAVED ---
 function showSaved(){
-document.getElementById("backBtn").style.display="block";
-showList(saved);
+  document.getElementById("backBtn").style.display="block";
+  showList(saved);
 }
 
-// -------- SEARCH --------
+// --- SHOW ALL ---
+function showAll(){ showList(opportunities); }
+
+// --- SEARCH ---
 function searchOpportunities(){
-let v = document.getElementById("search").value.toLowerCase();
-let list = opportunities.filter(x=>x.title.toLowerCase().includes(v));
-showList(list);
+  let v = document.getElementById("search").value.toLowerCase();
+  let list = opportunities.filter(x=>x.title.toLowerCase().includes(v));
+  showList(list);
 }
 
-// -------- START --------
+// --- START ---
 showDaily();
 updateLevel();
 showHome();
-
 </script>
 
 </body>
