@@ -7,24 +7,32 @@
 
 <style>
 body { margin:0; font-family:Arial; background:#0f172a; color:white; }
-#splash { position:fixed; width:100%; height:100%; background:#0f172a; display:flex; justify-content:center; align-items:center; font-size:40px; font-weight:bold; z-index:9999; }
-#app { display:none; padding:10px; }
+
+#splash {
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#0f172a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:35px;
+  z-index:9999;
+}
 
 h1 { text-align:center; }
-.section { margin:10px 0; padding:12px; background:#1e293b; border-radius:12px; }
-.card { background:#334155; padding:12px; margin:8px 0; border-radius:10px; cursor:pointer; }
-.btn { background:#3b82f6; padding:10px; border-radius:8px; text-align:center; margin-top:10px; }
 
-#search { width:95%; padding:10px; margin:10px 0; border-radius:8px; border:none; }
-#backBtn { display:none; margin-bottom:10px; padding:10px; border:none; background:#3b82f6; color:white; border-radius:8px; }
+.section { margin:10px; padding:10px; background:#1e293b; border-radius:10px; }
+.card { background:#334155; padding:10px; margin:6px 0; border-radius:8px; cursor:pointer; }
 
-.level, .counter, .daily { text-align:center; margin:10px 0; }
-.daily { background:#2563eb; padding:10px; border-radius:10px; }
-
-.tag { font-size:12px; padding:3px 6px; border-radius:6px; margin-left:5px; }
+.tag { font-size:10px; margin-left:5px; padding:3px 5px; border-radius:5px; }
 .urgent { background:red; }
 .high { background:green; }
 .scholar { background:purple; }
+
+#search { width:90%; margin:10px; padding:10px; border-radius:8px; border:none; }
+#backBtn { display:none; margin:10px; padding:10px; background:#3b82f6; border:none; color:white; border-radius:8px; }
+
 </style>
 </head>
 
@@ -32,17 +40,12 @@ h1 { text-align:center; }
 
 <div id="splash">🚀 Opportune</div>
 
-<div id="app">
+<div id="app" style="display:none;">
 
 <h1>🚀 Opportune</h1>
 
-<div class="level" id="levelDisplay"></div>
-<div class="counter" id="visitorCount"></div>
-
-<input id="search" placeholder="Search opportunities..." onkeyup="searchOpportunities()">
+<input id="search" placeholder="Search..." onkeyup="searchOpportunities()">
 <button id="backBtn" onclick="showHome()">⬅ Back</button>
-
-<div class="daily" id="dailySuggestion"></div>
 
 <div id="content"></div>
 
@@ -50,23 +53,82 @@ h1 { text-align:center; }
 
 <script>
 
-// SPLASH
-setTimeout(()=>{
+// SAFE START (no crash)
+window.onload = function(){
+
+// hide splash safely
+setTimeout(function(){
   document.getElementById("splash").style.display="none";
   document.getElementById("app").style.display="block";
-},3000);
-
-// VISITS
-let visits = localStorage.getItem("visits") || 0;
-visits++;
-localStorage.setItem("visits", visits);
-document.getElementById("visitorCount").innerText = "👀 Visits: " + visits;
-
-// STORAGE
-let saved = JSON.parse(localStorage.getItem("saved") || "[]");
-let level = parseInt(localStorage.getItem("level") || "1");
+},2000);
 
 // DATA
 const opportunities = [
-{title:"Freelancing Online",problem:"online",desc:"Earn online from skills.",cost:"Free",steps:"Join Fiverr/Upwork.",tip:"Start small.",tag:"high"},
-{title:"Scholarship Canada",problem:"study",desc:"Apply to study in Canada.",cost:"Free",steps:"Apply online.",tip:"Check deadlines.",tag:"sch
+{title:"Sell Snacks Fast",problem:"money",desc:"Sell snacks quickly",tag:"urgent"},
+{title:"Freelancing Online",problem:"online",desc:"Earn online",tag:"high"},
+{title:"Scholarship Canada",problem:"study",desc:"Study abroad",tag:"scholar urgent"},
+{title:"YouTube Channel",problem:"online",desc:"Make videos",tag:"high"},
+{title:"Laundry Service",problem:"money",desc:"Wash clothes",tag:""},
+{title:"Graphic Design",problem:"skill",desc:"Design work",tag:"high"}
+];
+
+// HOME
+function showHome(){
+document.getElementById("backBtn").style.display="none";
+
+let html = "<div class='section'><h3>⚡ Urgent</h3>";
+html += opportunities.filter(x=>x.tag.includes("urgent")).map(card).join("");
+html += "</div>";
+
+html += "<div class='section'><h3>💰 High Paying</h3>";
+html += opportunities.filter(x=>x.tag.includes("high")).map(card).join("");
+html += "</div>";
+
+html += "<div class='section'><h3>🎓 Scholarships</h3>";
+html += opportunities.filter(x=>x.tag.includes("scholar")).map(card).join("");
+html += "</div>";
+
+html += "<div class='section'><h3>All</h3>";
+html += opportunities.map(card).join("");
+html += "</div>";
+
+document.getElementById("content").innerHTML = html;
+}
+
+// CARD
+function card(x){
+let tags="";
+if(x.tag.includes("urgent")) tags += "<span class='tag urgent'>URGENT</span>";
+if(x.tag.includes("high")) tags += "<span class='tag high'>HIGH</span>";
+if(x.tag.includes("scholar")) tags += "<span class='tag scholar'>SCHOLAR</span>";
+
+return `<div class="card" onclick="showDetail('${x.title}')">${x.title} ${tags}</div>`;
+}
+
+// DETAIL
+window.showDetail = function(title){
+let x = opportunities.find(i=>i.title==title);
+document.getElementById("backBtn").style.display="block";
+document.getElementById("content").innerHTML = `
+<div class="section">
+<h2>${x.title}</h2>
+<p>${x.desc}</p>
+</div>`;
+}
+
+// SEARCH
+window.searchOpportunities = function(){
+let v = document.getElementById("search").value.toLowerCase();
+let list = opportunities.filter(x=>x.title.toLowerCase().includes(v));
+document.getElementById("content").innerHTML = list.map(card).join("");
+}
+
+// START
+showHome();
+
+};
+
+</script>
+
+</body>
+</html>
