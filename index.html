@@ -13,6 +13,17 @@ h1 { text-align:center; padding:10px; }
 .section { margin:10px; padding:12px; background:#1e293b; border-radius:12px; }
 .card { background:#334155; padding:12px; margin:8px 0; border-radius:10px; cursor:pointer; }
 
+button {
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.primary { background:#22c55e; color:black; }
+.save { background:#3b82f6; color:white; }
+
 #search { width:90%; margin:10px; padding:10px; border-radius:8px; border:none; }
 
 #backBtn {
@@ -20,18 +31,21 @@ h1 { text-align:center; padding:10px; }
   margin:10px;
   padding:10px;
   background:#3b82f6;
-  border:none;
   color:white;
+  border:none;
   border-radius:8px;
 }
 
-.tag { font-size:11px; padding:3px 6px; border-radius:6px; margin-left:5px; }
-.urgent { background:red; }
-.high { background:green; }
-.scholar { background:purple; }
+.topBox {
+  margin:10px;
+  padding:15px;
+  background:#16a34a;
+  border-radius:12px;
+  text-align:center;
+}
 
-.level, .daily { text-align:center; margin:10px; }
-.daily { background:#2563eb; padding:10px; border-radius:10px; }
+.level { text-align:center; margin:10px; }
+
 </style>
 </head>
 
@@ -41,11 +55,11 @@ h1 { text-align:center; padding:10px; }
 
 <div class="level" id="levelDisplay"></div>
 
+<div class="topBox" id="todayBox"></div>
+
 <input id="search" placeholder="Search opportunities..." onkeyup="searchOpportunities()">
 
 <button id="backBtn" onclick="showHome()">⬅ Back</button>
-
-<div class="daily" id="dailySuggestion"></div>
 
 <div id="content"></div>
 
@@ -55,14 +69,69 @@ h1 { text-align:center; padding:10px; }
 let saved = JSON.parse(localStorage.getItem("saved") || "[]");
 let level = parseInt(localStorage.getItem("level") || "1");
 
-// DATA
+// DATA (REAL ACTION-BASED)
 const opportunities = [
-{title:"Sell Snacks Fast",problem:"money",desc:"Sell snacks at school.",cost:"10k UGX",steps:"Buy and sell quickly.",tip:"Busy areas.",tag:"urgent"},
-{title:"Freelancing Online",problem:"online",desc:"Earn online using skills.",cost:"Free",steps:"Join Fiverr.",tip:"Start small.",tag:"high"},
-{title:"Scholarship Canada",problem:"study",desc:"Study abroad free.",cost:"Free",steps:"Apply online.",tip:"Check deadlines.",tag:"scholar urgent"},
-{title:"YouTube Channel",problem:"online",desc:"Earn from videos.",cost:"Free",steps:"Upload videos.",tip:"Be consistent.",tag:"high"},
-{title:"Laundry Service",problem:"money",desc:"Wash clothes for money.",cost:"0",steps:"Charge per cloth.",tip:"Target busy people.",tag:""},
-{title:"Graphic Design",problem:"skill",desc:"Design logos.",cost:"Free",steps:"Learn Canva.",tip:"Practice daily.",tag:"high"}
+
+{
+title:"Sell Snacks Today",
+earn:"20k–50k UGX/day",
+time:"2–3 hours",
+problem:"money",
+steps:[
+"Buy snacks (10k)",
+"Go to busy place",
+"Sell fast"
+]
+},
+
+{
+title:"Make Money Online (Phone)",
+earn:"10k–100k UGX",
+time:"1–2 hours",
+problem:"online",
+steps:[
+"Use phone",
+"Join freelancing sites",
+"Do simple tasks"
+]
+},
+
+{
+title:"Scholarship Application",
+earn:"School fees covered",
+time:"1 hour",
+problem:"study",
+steps:[
+"Search scholarships",
+"Fill application",
+"Submit early"
+]
+},
+
+{
+title:"Laundry Side Hustle",
+earn:"5k–20k UGX",
+time:"2 hours",
+problem:"money",
+steps:[
+"Ask neighbors",
+"Charge per cloth",
+"Deliver clean clothes"
+]
+},
+
+{
+title:"Graphic Design",
+earn:"20k–200k UGX",
+time:"Flexible",
+problem:"skill",
+steps:[
+"Learn Canva",
+"Practice designs",
+"Sell to clients"
+]
+}
+
 ];
 
 // LEVEL
@@ -71,10 +140,11 @@ document.getElementById("levelDisplay").innerText = "Level " + level;
 localStorage.setItem("level", level);
 }
 
-// DAILY
-function showDaily(){
-let d = opportunities[Math.floor(Math.random()*opportunities.length)];
-document.getElementById("dailySuggestion").innerText = "📌 Daily: " + d.title;
+// TODAY
+function showToday(){
+let o = opportunities[Math.floor(Math.random()*opportunities.length)];
+document.getElementById("todayBox").innerHTML =
+`🔥 TODAY: ${o.title}<br>💰 ${o.earn}<br><button class="primary" onclick="showDetail('${o.title}')">Start Now</button>`;
 }
 
 // HOME
@@ -82,40 +152,29 @@ function showHome(){
 document.getElementById("backBtn").style.display="none";
 
 document.getElementById("content").innerHTML = `
-<div class="section">
-<h3>⚡ Urgent Opportunities</h3>
-${opportunities.filter(x=>x.tag.includes("urgent")).map(card).join("")}
-</div>
 
 <div class="section">
-<h3>💰 High Paying</h3>
-${opportunities.filter(x=>x.tag.includes("high")).map(card).join("")}
-</div>
-
-<div class="section">
-<h3>🎓 Scholarships</h3>
-${opportunities.filter(x=>x.tag.includes("scholar")).map(card).join("")}
-</div>
-
-<div class="section">
-<h3>🌍 Categories</h3>
-<div class="card" onclick="filter('money')">💰 Money</div>
-<div class="card" onclick="filter('study')">🎓 Study</div>
-<div class="card" onclick="filter('skill')">🧠 Skills</div>
-<div class="card" onclick="filter('online')">🌐 Online</div>
+<h3>⚡ Quick Actions</h3>
+<div class="card" onclick="filter('money')">💰 I need money</div>
+<div class="card" onclick="filter('study')">🎓 I need school fees</div>
+<div class="card" onclick="filter('online')">🌐 I want online work</div>
+<div class="card" onclick="filter('skill')">🧠 Learn a skill</div>
 <div class="card" onclick="showSaved()">⭐ Saved</div>
 </div>
+
+<div class="section">
+<h3>🔥 All Opportunities</h3>
+${opportunities.map(card).join("")}
+</div>
+
 `;
 }
 
 // CARD
-function card(x){
-let tags="";
-if(x.tag.includes("urgent")) tags += "<span class='tag urgent'>URGENT</span>";
-if(x.tag.includes("high")) tags += "<span class='tag high'>HIGH</span>";
-if(x.tag.includes("scholar")) tags += "<span class='tag scholar'>SCHOLAR</span>";
-
-return `<div class="card" onclick="showDetail('${x.title}')">${x.title} ${tags}</div>`;
+function card(o){
+return `<div class="card" onclick="showDetail('${o.title}')">
+${o.title}<br><small>💰 ${o.earn}</small>
+</div>`;
 }
 
 // FILTER
@@ -128,34 +187,37 @@ showList(list);
 // LIST
 function showList(list){
 let html="";
-list.forEach(x=> html += card(x));
+list.forEach(o=> html += card(o));
 document.getElementById("content").innerHTML = html || "No results";
 }
 
 // DETAIL
 function showDetail(title){
-let x = opportunities.find(i=>i.title==title) || saved.find(i=>i.title==title);
+let o = opportunities.find(x=>x.title==title) || saved.find(x=>x.title==title);
 
 document.getElementById("backBtn").style.display="block";
 
 document.getElementById("content").innerHTML = `
 <div class="section">
-<h2>${x.title}</h2>
-<p>${x.desc}</p>
-<p><b>💰 Cost:</b> ${x.cost}</p>
-<p><b>📌 Steps:</b> ${x.steps}</p>
-<p><b>💡 Tip:</b> ${x.tip}</p>
-<div class="card" onclick="save('${x.title}')">⭐ Save</div>
+<h2>${o.title}</h2>
+<p>💰 Earn: ${o.earn}</p>
+<p>⏱ Time: ${o.time}</p>
+
+<h3>Steps:</h3>
+<ul>${o.steps.map(s=>"<li>"+s+"</li>").join("")}</ul>
+
+<button class="primary">🚀 Start Now</button>
+<button class="save" onclick="save('${o.title}')">⭐ Save</button>
 </div>
 `;
 }
 
 // SAVE
 function save(title){
-let x = opportunities.find(i=>i.title==title);
+let o = opportunities.find(x=>x.title==title);
 
-if(!saved.find(i=>i.title==title)){
-saved.push(x);
+if(!saved.find(x=>x.title==title)){
+saved.push(o);
 localStorage.setItem("saved", JSON.stringify(saved));
 level++;
 updateLevel();
@@ -174,13 +236,13 @@ showList(saved);
 // SEARCH
 function searchOpportunities(){
 let v = document.getElementById("search").value.toLowerCase();
-let list = opportunities.filter(x=>x.title.toLowerCase().includes(v));
+let list = opportunities.filter(o=>o.title.toLowerCase().includes(v));
 showList(list);
 }
 
 // START
 updateLevel();
-showDaily();
+showToday();
 showHome();
 
 </script>
