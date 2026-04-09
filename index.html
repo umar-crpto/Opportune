@@ -13,17 +13,6 @@ h1 { text-align:center; padding:10px; }
 .section { margin:10px; padding:12px; background:#1e293b; border-radius:12px; }
 .card { background:#334155; padding:12px; margin:8px 0; border-radius:10px; cursor:pointer; }
 
-button {
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-.primary { background:#22c55e; color:black; }
-.save { background:#3b82f6; color:white; }
-
 #search { width:90%; margin:10px; padding:10px; border-radius:8px; border:none; }
 
 #backBtn {
@@ -31,21 +20,49 @@ button {
   margin:10px;
   padding:10px;
   background:#3b82f6;
-  color:white;
   border:none;
+  color:white;
   border-radius:8px;
 }
 
-.topBox {
-  margin:10px;
-  padding:15px;
-  background:#16a34a;
-  border-radius:12px;
-  text-align:center;
+.tag { font-size:11px; padding:3px 6px; border-radius:6px; margin-left:5px; }
+.urgent { background:red; }
+.high { background:green; }
+.scholar { background:purple; }
+
+.daily { text-align:center; margin:10px; background:#2563eb; padding:10px; border-radius:10px; }
+
+/* AI */
+#aiBtn {
+position:fixed;
+bottom:20px;
+right:20px;
+padding:15px;
+border:none;
+border-radius:50%;
+background:#22c55e;
+color:white;
+font-size:18px;
 }
 
-.level { text-align:center; margin:10px; }
+#aiBox {
+display:none;
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+height:80%;
+background:#0f172a;
+padding:10px;
+}
 
+#chat {
+height:70%;
+overflow:auto;
+background:#1e293b;
+padding:10px;
+border-radius:10px;
+}
 </style>
 </head>
 
@@ -53,98 +70,43 @@ button {
 
 <h1>🚀 Opportune</h1>
 
-<div class="level" id="levelDisplay"></div>
-
-<div class="topBox" id="todayBox"></div>
-
-<input id="search" placeholder="Search opportunities..." onkeyup="searchOpportunities()">
-
+<input id="search" placeholder="Search..." onkeyup="searchOpportunities()">
 <button id="backBtn" onclick="showHome()">⬅ Back</button>
 
+<div class="daily" id="daily"></div>
+
 <div id="content"></div>
+
+<button id="aiBtn" onclick="openAI()">🤖</button>
+
+<div id="aiBox">
+<h3>Opportune AI 🤖</h3>
+<div id="chat"></div>
+<input id="userInput" placeholder="Ask about jobs, scholarships..."
+style="width:70%;padding:10px;border:none;border-radius:8px;">
+<button onclick="sendAI()" style="padding:10px;background:#22c55e;border:none;border-radius:8px;color:white;">Send</button>
+<button onclick="closeAI()" style="padding:10px;background:red;border:none;border-radius:8px;color:white;">Close</button>
+</div>
 
 <script>
 
 // STORAGE
 let saved = JSON.parse(localStorage.getItem("saved") || "[]");
-let level = parseInt(localStorage.getItem("level") || "1");
 
-// DATA (REAL ACTION-BASED)
+// DATA
 const opportunities = [
-
-{
-title:"Sell Snacks Today",
-earn:"20k–50k UGX/day",
-time:"2–3 hours",
-problem:"money",
-steps:[
-"Buy snacks (10k)",
-"Go to busy place",
-"Sell fast"
-]
-},
-
-{
-title:"Make Money Online (Phone)",
-earn:"10k–100k UGX",
-time:"1–2 hours",
-problem:"online",
-steps:[
-"Use phone",
-"Join freelancing sites",
-"Do simple tasks"
-]
-},
-
-{
-title:"Scholarship Application",
-earn:"School fees covered",
-time:"1 hour",
-problem:"study",
-steps:[
-"Search scholarships",
-"Fill application",
-"Submit early"
-]
-},
-
-{
-title:"Laundry Side Hustle",
-earn:"5k–20k UGX",
-time:"2 hours",
-problem:"money",
-steps:[
-"Ask neighbors",
-"Charge per cloth",
-"Deliver clean clothes"
-]
-},
-
-{
-title:"Graphic Design",
-earn:"20k–200k UGX",
-time:"Flexible",
-problem:"skill",
-steps:[
-"Learn Canva",
-"Practice designs",
-"Sell to clients"
-]
-}
-
+{title:"Sell Snacks Fast",type:"money",desc:"Sell snacks at school",tag:"urgent"},
+{title:"Freelancing Online",type:"online",desc:"Earn online using skills",tag:"high"},
+{title:"Scholarship Canada",type:"study",desc:"Study abroad",tag:"scholar urgent"},
+{title:"YouTube Channel",type:"online",desc:"Make videos",tag:"high"},
+{title:"Laundry Service",type:"money",desc:"Wash clothes",tag:""},
+{title:"Graphic Design",type:"skill",desc:"Design logos",tag:"high"}
 ];
 
-// LEVEL
-function updateLevel(){
-document.getElementById("levelDisplay").innerText = "Level " + level;
-localStorage.setItem("level", level);
-}
-
-// TODAY
-function showToday(){
-let o = opportunities[Math.floor(Math.random()*opportunities.length)];
-document.getElementById("todayBox").innerHTML =
-`🔥 TODAY: ${o.title}<br>💰 ${o.earn}<br><button class="primary" onclick="showDetail('${o.title}')">Start Now</button>`;
+// DAILY
+function showDaily(){
+let d = opportunities[Math.floor(Math.random()*opportunities.length)];
+document.getElementById("daily").innerText = "📌 Today: " + d.title;
 }
 
 // HOME
@@ -152,75 +114,77 @@ function showHome(){
 document.getElementById("backBtn").style.display="none";
 
 document.getElementById("content").innerHTML = `
+<div class="section">
+<h3>⚡ Urgent</h3>
+${opportunities.filter(x=>x.tag.includes("urgent")).map(card).join("")}
+</div>
 
 <div class="section">
-<h3>⚡ Quick Actions</h3>
-<div class="card" onclick="filter('money')">💰 I need money</div>
-<div class="card" onclick="filter('study')">🎓 I need school fees</div>
-<div class="card" onclick="filter('online')">🌐 I want online work</div>
-<div class="card" onclick="filter('skill')">🧠 Learn a skill</div>
+<h3>💰 High Paying</h3>
+${opportunities.filter(x=>x.tag.includes("high")).map(card).join("")}
+</div>
+
+<div class="section">
+<h3>🎓 Scholarships</h3>
+${opportunities.filter(x=>x.tag.includes("scholar")).map(card).join("")}
+</div>
+
+<div class="section">
+<h3>🌍 Categories</h3>
+<div class="card" onclick="filter('money')">💰 Money</div>
+<div class="card" onclick="filter('study')">🎓 Study</div>
+<div class="card" onclick="filter('online')">🌐 Online</div>
 <div class="card" onclick="showSaved()">⭐ Saved</div>
 </div>
-
-<div class="section">
-<h3>🔥 All Opportunities</h3>
-${opportunities.map(card).join("")}
-</div>
-
 `;
 }
 
 // CARD
-function card(o){
-return `<div class="card" onclick="showDetail('${o.title}')">
-${o.title}<br><small>💰 ${o.earn}</small>
-</div>`;
+function card(x){
+let tags="";
+if(x.tag.includes("urgent")) tags += "<span class='tag urgent'>URGENT</span>";
+if(x.tag.includes("high")) tags += "<span class='tag high'>HIGH</span>";
+if(x.tag.includes("scholar")) tags += "<span class='tag scholar'>SCHOLAR</span>";
+
+return `<div class="card" onclick="showDetail('${x.title}')">${x.title} ${tags}</div>`;
 }
 
 // FILTER
 function filter(type){
 document.getElementById("backBtn").style.display="block";
-let list = opportunities.filter(x=>x.problem==type);
+let list = opportunities.filter(x=>x.type==type);
 showList(list);
 }
 
 // LIST
 function showList(list){
 let html="";
-list.forEach(o=> html += card(o));
+list.forEach(x=> html += card(x));
 document.getElementById("content").innerHTML = html || "No results";
 }
 
 // DETAIL
 function showDetail(title){
-let o = opportunities.find(x=>x.title==title) || saved.find(x=>x.title==title);
+let x = opportunities.find(i=>i.title==title);
 
 document.getElementById("backBtn").style.display="block";
 
 document.getElementById("content").innerHTML = `
 <div class="section">
-<h2>${o.title}</h2>
-<p>💰 Earn: ${o.earn}</p>
-<p>⏱ Time: ${o.time}</p>
-
-<h3>Steps:</h3>
-<ul>${o.steps.map(s=>"<li>"+s+"</li>").join("")}</ul>
-
-<button class="primary">🚀 Start Now</button>
-<button class="save" onclick="save('${o.title}')">⭐ Save</button>
+<h2>${x.title}</h2>
+<p>${x.desc}</p>
+<div class="card" onclick="save('${x.title}')">⭐ Save</div>
 </div>
 `;
 }
 
 // SAVE
 function save(title){
-let o = opportunities.find(x=>x.title==title);
+let x = opportunities.find(i=>i.title==title);
 
-if(!saved.find(x=>x.title==title)){
-saved.push(o);
+if(!saved.find(i=>i.title==title)){
+saved.push(x);
 localStorage.setItem("saved", JSON.stringify(saved));
-level++;
-updateLevel();
 alert("Saved!");
 }else{
 alert("Already saved");
@@ -236,13 +200,49 @@ showList(saved);
 // SEARCH
 function searchOpportunities(){
 let v = document.getElementById("search").value.toLowerCase();
-let list = opportunities.filter(o=>o.title.toLowerCase().includes(v));
+let list = opportunities.filter(x=>x.title.toLowerCase().includes(v));
 showList(list);
 }
 
+// AI
+const aiData = {
+jobs:["MTN Uganda","Airtel Uganda","Stanbic Bank","Jumia Uganda"],
+scholarships:["Mastercard Foundation","DAAD","Chevening","Uganda Govt"],
+online:["Fiverr","Upwork","Freelancer"],
+business:["Retail shop","Snacks business","Laundry service"]
+};
+
+function openAI(){ document.getElementById("aiBox").style.display="block"; }
+function closeAI(){ document.getElementById("aiBox").style.display="none"; }
+
+function sendAI(){
+let input = document.getElementById("userInput").value.toLowerCase();
+let chat = document.getElementById("chat");
+
+chat.innerHTML += "<p>🧑: "+input+"</p>";
+
+let response="Try asking about jobs, scholarships or money.";
+
+if(input.includes("job")||input.includes("company")){
+response="🏢 Companies:<br>"+aiData.jobs.join("<br>");
+}
+else if(input.includes("scholar")){
+response="🎓 Scholarships:<br>"+aiData.scholarships.join("<br>");
+}
+else if(input.includes("online")){
+response="🌐 Online:<br>"+aiData.online.join("<br>");
+}
+else if(input.includes("money")||input.includes("business")){
+response="💰 Ideas:<br>"+aiData.business.join("<br>");
+}
+
+chat.innerHTML += "<p>🤖: "+response+"</p>";
+document.getElementById("userInput").value="";
+chat.scrollTop = chat.scrollHeight;
+}
+
 // START
-updateLevel();
-showToday();
+showDaily();
 showHome();
 
 </script>
