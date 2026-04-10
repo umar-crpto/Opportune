@@ -3,25 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opportune 100+</title>
+<title>Opportune Pro</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:white;}
 header{padding:15px;text-align:center;background:#111827;font-size:22px;font-weight:bold;}
-.tabs{display:flex;flex-wrap:wrap;justify-content:space-around;background:#1f2937;padding:10px;position:sticky;top:0;}
-.tab{cursor:pointer;font-size:12px;margin:5px;}
+.tabs{display:flex;flex-wrap:wrap;justify-content:space-around;background:#1f2937;padding:10px;}
+.tab{cursor:pointer;font-size:12px;}
 .active{color:#22c55e;font-weight:bold;}
-input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;outline:none;}
-.card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;cursor:pointer;}
-button{padding:6px 10px;border:none;border-radius:6px;background:#22c55e;cursor:pointer;}
-.small{font-size:12px;opacity:0.8;}
-.modal{
-position:fixed;top:0;left:0;width:100%;height:100%;
-background:#000000cc;display:none;justify-content:center;align-items:center;
-}
-.modal-content{
-background:#1e293b;padding:15px;border-radius:10px;width:90%;
-}
+input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;}
+.card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;}
+button{padding:6px;border:none;border-radius:6px;background:#22c55e;}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000000cc;display:none;justify-content:center;align-items:center;}
+.modal-content{background:#1e293b;padding:15px;border-radius:10px;width:90%;}
 </style>
 </head>
 
@@ -31,22 +25,23 @@ background:#1e293b;padding:15px;border-radius:10px;width:90%;
 
 <div class="tabs">
 <div class="tab active" onclick="switchTab('jobs')">Jobs</div>
-<div class="tab" onclick="switchTab('scholarships')">Scholarships</div>
-<div class="tab" onclick="switchTab('hustles')">Hustles</div>
 <div class="tab" onclick="switchTab('business')">Business</div>
+<div class="tab" onclick="switchTab('hustles')">Hustles</div>
+<div class="tab" onclick="switchTab('scholarships')">Scholarships</div>
+<div class="tab" onclick="switchTab('money')">Make Money</div>
 <div class="tab" onclick="switchTab('saved')">Saved</div>
 </div>
 
-<input id="search" placeholder="Search opportunities..." onkeyup="render()">
+<input id="search" placeholder="Search..." onkeyup="render()">
 
 <div id="content"></div>
 
 <div class="modal" id="modal">
 <div class="modal-content">
-<h3 id="mTitle"></h3>
-<p id="mDesc"></p>
-<p id="mMoney"></p>
-<p id="mSteps"></p>
+<h3 id="title"></h3>
+<p id="desc"></p>
+<p id="money"></p>
+<p id="steps"></p>
 <button onclick="closeModal()">Close</button>
 </div>
 </div>
@@ -54,34 +49,32 @@ background:#1e293b;padding:15px;border-radius:10px;width:90%;
 <script>
 
 let tab="jobs";
+let saved=JSON.parse(localStorage.getItem("saved"))||[];
 
-/* --------- GENERATE 100 ITEMS EACH ---------- */
-
-function gen(type,prefix){
-let arr=[];
-for(let i=1;i<=100;i++){
-arr.push({
-id:type+"_"+i,
-t:prefix+" "+i,
-d:"Click to view full details",
-money:"$50 - $5000 (varies)",
-earn:"$100 - $10000/month potential",
-steps:"Start small → Learn skill → Build experience → Scale up"
+/* SMART GENERATOR (10,000 ITEMS PER CATEGORY) */
+function generate(type){
+let list=[];
+for(let i=1;i<=10000;i++){
+list.push({
+id:type+i,
+title:type.toUpperCase()+" Opportunity "+i,
+desc:"Tap to see details",
+cost:"$50 - $5000",
+earn:"$200 - $15000/month",
+steps:"Learn → Start small → Stay consistent → Grow"
 });
 }
-return arr;
+return list;
 }
 
 let data={
-jobs:gen("job","Job Opportunity"),
-scholarships:gen("sch","Scholarship Program"),
-hustles:gen("hus","Side Hustle Idea"),
-business:gen("biz","Business Idea")
+jobs:generate("job"),
+business:generate("business"),
+hustles:generate("hustle"),
+scholarships:generate("scholarship"),
+money:generate("money")
 };
 
-let saved=JSON.parse(localStorage.getItem("saved"))||[];
-
-/* --------- TAB SWITCH ---------- */
 function switchTab(t){
 tab=t;
 document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
@@ -89,55 +82,39 @@ event.target.classList.add("active");
 render();
 }
 
-/* --------- SAVE FIXED ---------- */
 function saveItem(item){
-let exists=saved.find(s=>s.id===item.id);
-if(!exists){
+if(!saved.find(s=>s.id===item.id)){
 saved.push(item);
 localStorage.setItem("saved",JSON.stringify(saved));
 alert("Saved!");
 }
 }
 
-/* --------- MODAL VIEW ---------- */
 function openModal(item){
 document.getElementById("modal").style.display="flex";
-document.getElementById("mTitle").innerText=item.t;
-document.getElementById("mDesc").innerText=item.d;
-document.getElementById("mMoney").innerText="💰 Cost: "+item.money+" | 📈 Earnings: "+item.earn;
-document.getElementById("mSteps").innerText="🧠 How to start: "+item.steps;
+document.getElementById("title").innerText=item.title;
+document.getElementById("desc").innerText=item.desc;
+document.getElementById("money").innerText="💰 Cost: "+item.cost+" | 📈 Earn: "+item.earn;
+document.getElementById("steps").innerText="🧠 Steps: "+item.steps;
 }
 
-/* --------- CLOSE ---------- */
 function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 
-/* --------- SEARCH ---------- */
-function match(i,q){
-return i.t.toLowerCase().includes(q)||i.d.toLowerCase().includes(q);
-}
-
-/* --------- RENDER ---------- */
 function render(){
 let q=document.getElementById("search").value.toLowerCase();
-let list=[];
-
-if(tab=="jobs") list=data.jobs;
-if(tab=="scholarships") list=data.scholarships;
-if(tab=="hustles") list=data.hustles;
-if(tab=="business") list=data.business;
-if(tab=="saved") list=saved;
+let list=(tab=="saved")?saved:data[tab];
 
 let c=document.getElementById("content");
 c.innerHTML="";
 
-list.filter(i=>match(i,q)).forEach(i=>{
+list.slice(0,50).filter(i=>i.title.toLowerCase().includes(q)).forEach(i=>{
 c.innerHTML+=`
-<div class="card" onclick='openModal(${JSON.stringify(i)})'>
-<b>${i.t}</b>
-<p class="small">${i.d}</p>
-<button onclick='event.stopPropagation();saveItem(${JSON.stringify(i)})'>Save</button>
+<div class="card">
+<b onclick='openModal(${JSON.stringify(i)})'>${i.title}</b>
+<p>${i.desc}</p>
+<button onclick='saveItem(${JSON.stringify(i)})'>Save</button>
 </div>
 `;
 });
