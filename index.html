@@ -6,60 +6,81 @@
 
   <style>
     body {
-      font-family: Arial;
       margin: 0;
-      background: #f4f6f8;
+      font-family: Arial;
+      background: #f2f4f8;
     }
 
     .header {
       background: #1e90ff;
       color: white;
-      padding: 20px;
+      padding: 15px;
       text-align: center;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
     }
 
     .search {
-      padding: 15px;
-      text-align: center;
+      padding: 10px;
     }
 
     input {
-      width: 90%;
-      padding: 12px;
+      width: 95%;
+      padding: 10px;
       border-radius: 10px;
       border: 1px solid #ccc;
     }
 
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
+    .feed {
       padding: 10px;
     }
 
-    button {
-      padding: 12px;
+    .card {
+      background: white;
+      margin-bottom: 10px;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .tag {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      color: white;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+
+    .job { background: #3498db; }
+    .scholarship { background: #2ecc71; }
+    .hustle { background: #f39c12; }
+    .urgent { background: #e74c3c; }
+
+    .btn {
+      margin-top: 10px;
+      padding: 8px;
       border: none;
-      border-radius: 10px;
-      font-size: 14px;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    .jobs { background: #3498db; color: white; }
-    .scholarships { background: #2ecc71; color: white; }
-    .hustles { background: #f39c12; color: white; }
-    .urgent { background: #e74c3c; color: white; }
-
-    .box {
-      background: white;
-      margin: 15px;
-      padding: 15px;
-      border-radius: 10px;
-      min-height: 200px;
+    .save {
+      background: #555;
+      color: white;
     }
+
+    .aiBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #000;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      font-size: 18px;
+    }
+
   </style>
 </head>
 
@@ -68,64 +89,57 @@
 <div class="header">🌟 OPPORTUNE</div>
 
 <div class="search">
-  <input id="searchInput" placeholder="Search jobs, scholarships, hustles..." onkeyup="search()">
+  <input id="search" placeholder="Search opportunities..." onkeyup="search()">
 </div>
 
-<div class="buttons">
-  <button class="jobs" onclick="show('jobs')">💼 Jobs</button>
-  <button class="scholarships" onclick="show('scholarships')">🎓 Scholarships</button>
-  <button class="hustles" onclick="show('hustles')">💡 Side Hustles</button>
-  <button class="urgent" onclick="show('urgent')">🔥 Urgent</button>
-</div>
+<div class="feed" id="feed"></div>
 
-<div class="box" id="content">
-  <h2>Welcome to Opportune 🚀</h2>
-  <p>Find jobs, scholarships, and money opportunities in one place.</p>
-</div>
+<div class="aiBtn" onclick="aiHelp()">🤖</div>
 
 <script>
-const data = {
-  jobs: `
-    <h2>💼 Jobs</h2>
-    <p>- Part-time jobs in Uganda</p>
-    <p>- Online freelance work</p>
-    <p>- Internships for students</p>
-  `,
+const data = [
+  {type:"job", title:"Part-time Online Job", desc:"Work from home and earn daily income."},
+  {type:"scholarship", title:"Uganda University Scholarship", desc:"Full tuition support available."},
+  {type:"hustle", title:"Phone Accessories Business", desc:"Start small and grow income."},
+  {type:"urgent", title:"Urgent Internship Closing Soon", desc:"Apply within 48 hours."}
+];
 
-  scholarships: `
-    <h2>🎓 Scholarships</h2>
-    <p>- Uganda university bursaries</p>
-    <p>- African scholarships</p>
-    <p>- International funding programs</p>
-  `,
-
-  hustles: `
-    <h2>💡 Side Hustles</h2>
-    <p>- Phone accessories business</p>
-    <p>- Graphic design basics</p>
-    <p>- Social media management</p>
-  `,
-
-  urgent: `
-    <h2>🔥 Urgent Opportunities</h2>
-    <p>- Apply in 48 hours jobs</p>
-    <p>- Limited scholarships</p>
-    <p>- Fast hiring programs</p>
-  `
-};
-
-function show(type){
-  document.getElementById("content").innerHTML = data[type];
+function render(list){
+  let html = "";
+  list.forEach(item=>{
+    html += `
+      <div class="card">
+        <div class="tag ${item.type}">${item.type.toUpperCase()}</div>
+        <h3>${item.title}</h3>
+        <p>${item.desc}</p>
+        <button class="btn save" onclick="saveItem('${item.title}')">Save</button>
+      </div>
+    `;
+  });
+  document.getElementById("feed").innerHTML = html;
 }
 
 function search(){
-  let input = document.getElementById("searchInput").value.toLowerCase();
-  document.getElementById("content").innerHTML = `
-    <h3>🔍 Search Results</h3>
-    <p>You searched for: <b>${input}</b></p>
-    <p>Matching opportunities will appear here (next upgrade = real database)</p>
-  `;
+  let val = document.getElementById("search").value.toLowerCase();
+  let filtered = data.filter(d =>
+    d.title.toLowerCase().includes(val) ||
+    d.desc.toLowerCase().includes(val)
+  );
+  render(filtered);
 }
+
+function aiHelp(){
+  alert("🤖 AI Suggestion:\nStart with small hustles like phone accessories or online freelancing while applying for scholarships.");
+}
+
+function saveItem(title){
+  let saved = JSON.parse(localStorage.getItem("saved") || "[]");
+  saved.push(title);
+  localStorage.setItem("saved", JSON.stringify(saved));
+  alert("Saved!");
+}
+
+render(data);
 </script>
 
 </body>
