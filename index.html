@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opportune Pro</title>
+<title>Opportune</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:white;}
@@ -21,14 +21,13 @@ button{padding:6px;border:none;border-radius:6px;background:#22c55e;}
 
 <body>
 
-<header>Opportune 🚀</header>
+<header>Opportune 🌍</header>
 
 <div class="tabs">
 <div class="tab active" onclick="switchTab('jobs')">Jobs</div>
 <div class="tab" onclick="switchTab('business')">Business</div>
 <div class="tab" onclick="switchTab('hustles')">Hustles</div>
 <div class="tab" onclick="switchTab('scholarships')">Scholarships</div>
-<div class="tab" onclick="switchTab('money')">Make Money</div>
 <div class="tab" onclick="switchTab('saved')">Saved</div>
 </div>
 
@@ -49,31 +48,68 @@ button{padding:6px;border:none;border-radius:6px;background:#22c55e;}
 <script>
 
 let tab="jobs";
-let saved=JSON.parse(localStorage.getItem("saved"))||[];
 
-/* SMART GENERATOR (10,000 ITEMS PER CATEGORY) */
-function generate(type){
-let list=[];
-for(let i=1;i<=10000;i++){
-list.push({
-id:type+i,
-title:type.toUpperCase()+" Opportunity "+i,
-desc:"Tap to see details",
-cost:"$50 - $5000",
-earn:"$200 - $15000/month",
-steps:"Learn → Start small → Stay consistent → Grow"
-});
-}
-return list;
-}
+/* REAL DATA (NOT REPEATED) */
 
 let data={
-jobs:generate("job"),
-business:generate("business"),
-hustles:generate("hustle"),
-scholarships:generate("scholarship"),
-money:generate("money")
+
+jobs:[
+{t:"Software Developer",d:"Build apps and websites",cost:"$0-$200",earn:"$500-$5000/mo",steps:"Learn coding → Build projects → Apply jobs"},
+{t:"Graphic Designer",d:"Design logos and posters",cost:"$50",earn:"$300-$2000/mo",steps:"Learn design → Use Canva → Get clients"},
+{t:"Video Editor",d:"Edit videos for creators",cost:"$0",earn:"$200-$3000/mo",steps:"Learn editing → Practice → Freelance"},
+{t:"Data Entry Clerk",d:"Input data online",cost:"$0",earn:"$100-$800/mo",steps:"Apply online → Work remote"},
+{t:"Social Media Manager",d:"Manage pages",cost:"$0",earn:"$200-$1500/mo",steps:"Learn social media → Get clients"},
+{t:"Web Developer",d:"Build websites",cost:"$0",earn:"$500-$5000/mo",steps:"Learn HTML → Build sites"},
+{t:"IT Support",d:"Fix computers",cost:"$50",earn:"$200-$1000/mo",steps:"Learn basics → Help people"},
+{t:"Online Tutor",d:"Teach students",cost:"$0",earn:"$200-$2000/mo",steps:"Choose subject → Teach online"},
+{t:"Photographer",d:"Take event photos",cost:"$100",earn:"$300-$2000/mo",steps:"Get camera → Start small"},
+{t:"App Tester",d:"Test apps",cost:"$0",earn:"$100-$1000/mo",steps:"Join platforms → Test apps"}
+],
+
+business:[
+{t:"Restaurant",d:"Sell food",cost:"$500",earn:"$500-$5000/mo",steps:"Find location → Cook → Sell"},
+{t:"Clothing Shop",d:"Sell clothes",cost:"$300",earn:"$300-$3000/mo",steps:"Buy stock → Sell"},
+{t:"Car Wash",d:"Clean cars",cost:"$200",earn:"$200-$1500/mo",steps:"Start small → Grow"},
+{t:"Salon",d:"Hair and beauty",cost:"$400",earn:"$400-$3000/mo",steps:"Learn → Open shop"},
+{t:"Phone Shop",d:"Sell phones",cost:"$500",earn:"$500-$4000/mo",steps:"Buy → Sell"},
+{t:"Bakery",d:"Make bread",cost:"$300",earn:"$300-$2500/mo",steps:"Bake → Sell"},
+{t:"Delivery Service",d:"Deliver goods",cost:"$200",earn:"$200-$2000/mo",steps:"Use bike → Deliver"},
+{t:"Cyber Cafe",d:"Internet services",cost:"$600",earn:"$400-$3000/mo",steps:"Setup → Charge users"},
+{t:"Laundry",d:"Wash clothes",cost:"$200",earn:"$200-$1500/mo",steps:"Start → Serve clients"},
+{t:"Farm Business",d:"Grow crops",cost:"$300",earn:"$300-$3000/mo",steps:"Plant → Sell"}
+],
+
+hustles:[
+{t:"Freelancing",d:"Work online",cost:"$0",earn:"$200-$3000/mo",steps:"Create account → Work"},
+{t:"YouTube",d:"Create videos",cost:"$0",earn:"$100-$5000/mo",steps:"Post videos → Grow"},
+{t:"TikTok Creator",d:"Make content",cost:"$0",earn:"$100-$3000/mo",steps:"Post daily"},
+{t:"Dropshipping",d:"Sell online",cost:"$50",earn:"$200-$5000/mo",steps:"Find product → Sell"},
+{t:"Graphic Design",d:"Design work",cost:"$0",earn:"$200-$2000/mo",steps:"Learn → Sell"},
+{t:"Photography",d:"Take photos",cost:"$100",earn:"$300-$2000/mo",steps:"Shoot → Sell"},
+{t:"Phone Repair",d:"Fix phones",cost:"$50",earn:"$200-$1500/mo",steps:"Learn → Fix"},
+{t:"Reselling",d:"Buy and sell",cost:"$100",earn:"$200-$2000/mo",steps:"Buy cheap → Sell"},
+{t:"Tutoring",d:"Teach others",cost:"$0",earn:"$200-$1000/mo",steps:"Teach → Earn"},
+{t:"Blogging",d:"Write online",cost:"$0",earn:"$100-$2000/mo",steps:"Write → Monetize"}
+],
+
+scholarships:[
+{t:"Chevening Scholarship",d:"Study in UK",cost:"Free",earn:"Full funding",steps:"Apply → Get selected"},
+{t:"DAAD Scholarship",d:"Study Germany",cost:"Free",earn:"Full funding",steps:"Apply online"},
+{t:"MEXT Japan",d:"Study Japan",cost:"Free",earn:"Full funding",steps:"Apply embassy"},
+{t:"Fulbright USA",d:"Study USA",cost:"Free",earn:"Full funding",steps:"Apply"},
+{t:"Erasmus+",d:"Study Europe",cost:"Free",earn:"Full funding",steps:"Apply"},
+{t:"Mastercard Foundation",d:"Africa students",cost:"Free",earn:"Full funding",steps:"Apply"},
+{t:"Commonwealth",d:"UK study",cost:"Free",earn:"Full funding",steps:"Apply"},
+{t:"Google Scholarship",d:"Tech skills",cost:"Free",earn:"Free training",steps:"Apply"},
+{t:"AU Scholarship",d:"Africa",cost:"Free",earn:"Funding",steps:"Apply"},
+{t:"Korea Scholarship",d:"Study Korea",cost:"Free",earn:"Full funding",steps:"Apply"}
+]
+
 };
+
+let saved=JSON.parse(localStorage.getItem("saved"))||[];
+
+/* FUNCTIONS */
 
 function switchTab(t){
 tab=t;
@@ -83,7 +119,7 @@ render();
 }
 
 function saveItem(item){
-if(!saved.find(s=>s.id===item.id)){
+if(!saved.find(s=>s.t===item.t)){
 saved.push(item);
 localStorage.setItem("saved",JSON.stringify(saved));
 alert("Saved!");
@@ -92,28 +128,27 @@ alert("Saved!");
 
 function openModal(item){
 document.getElementById("modal").style.display="flex";
-document.getElementById("title").innerText=item.title;
-document.getElementById("desc").innerText=item.desc;
-document.getElementById("money").innerText="💰 Cost: "+item.cost+" | 📈 Earn: "+item.earn;
-document.getElementById("steps").innerText="🧠 Steps: "+item.steps;
+title.innerText=item.t;
+desc.innerText=item.d;
+money.innerText="💰 Cost: "+item.cost+" | 📈 Earn: "+item.earn;
+steps.innerText="🧠 "+item.steps;
 }
 
 function closeModal(){
-document.getElementById("modal").style.display="none";
+modal.style.display="none";
 }
 
 function render(){
-let q=document.getElementById("search").value.toLowerCase();
+let q=search.value.toLowerCase();
 let list=(tab=="saved")?saved:data[tab];
 
-let c=document.getElementById("content");
-c.innerHTML="";
+content.innerHTML="";
 
-list.slice(0,50).filter(i=>i.title.toLowerCase().includes(q)).forEach(i=>{
-c.innerHTML+=`
+list.filter(i=>i.t.toLowerCase().includes(q)).forEach(i=>{
+content.innerHTML+=`
 <div class="card">
-<b onclick='openModal(${JSON.stringify(i)})'>${i.title}</b>
-<p>${i.desc}</p>
+<b onclick='openModal(${JSON.stringify(i)})'>${i.t}</b>
+<p>${i.d}</p>
 <button onclick='saveItem(${JSON.stringify(i)})'>Save</button>
 </div>
 `;
