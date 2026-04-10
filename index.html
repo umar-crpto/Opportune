@@ -3,101 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opportune Live</title>
+<title>Opportune</title>
 
 <style>
-body{font-family:Arial;margin:0;background:#0f172a;color:white;}
-header{padding:15px;text-align:center;background:#111827;font-size:20px;font-weight:bold;}
-.card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;}
-button{padding:6px;border:none;border-radius:6px;background:#22c55e;}
-.small{font-size:12px;opacity:0.8;}
-.tabs{display:flex;justify-content:space-around;background:#1f2937;padding:10px;}
-.tab{cursor:pointer;}
+body{margin:0;font-family:Arial;background:#0f172a;color:white;}
+header{padding:15px;text-align:center;background:#111827;font-size:22px;font-weight:bold;}
+.tabs{display:flex;justify-content:space-around;background:#1f2937;padding:10px;position:sticky;top:0;}
+.tab{cursor:pointer;font-size:14px;}
 .active{color:#22c55e;font-weight:bold;}
-input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;}
+input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;outline:none;}
+.card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;}
+button{padding:6px 10px;border:none;border-radius:6px;background:#22c55e;cursor:pointer;}
+.small{font-size:12px;opacity:0.8;}
 </style>
 </head>
 
 <body>
 
-<header>Opportune LIVE 🌍</header>
+<header>Opportune 🌍</header>
 
 <div class="tabs">
-<div class="tab active" onclick="loadJobs()">Jobs</div>
-<div class="tab" onclick="loadScholarships()">Scholarships</div>
-<div class="tab" onclick="loadHustles()">Hustles</div>
+<div class="tab active" onclick="switchTab('jobs')">Jobs</div>
+<div class="tab" onclick="switchTab('scholarships')">Scholarships</div>
+<div class="tab" onclick="switchTab('hustles')">Hustles</div>
+<div class="tab" onclick="switchTab('business')">Business</div>
+<div class="tab" onclick="switchTab('saved')">Saved</div>
 </div>
 
-<input id="search" placeholder="Search..." onkeyup="filter()">
+<input id="search" placeholder="Search opportunities..." onkeyup="render()">
 
 <div id="content"></div>
 
 <script>
 
-let currentData=[];
+let tab="jobs";
 
-// 🌍 LIVE JOBS (REMOTE API)
-async function loadJobs(){
-document.getElementById("content").innerHTML="Loading jobs...";
+let data={
+jobs:[
+{t:"Shop Assistant Kampala",d:"Retail store hiring staff"},
+{t:"Hotel Receptionist",d:"Entry level hotel job"},
+{t:"Remote Data Entry Job",d:"Work from home typing tasks"},
+{t:"Delivery Rider Job",d:"Motorbike delivery in city"},
+{t:"Intern Software Developer",d:"Learn coding on job"},
+{t:"Call Center Agent",d:"Customer support role"},
+{t:"Cleaner Job",d:"Office cleaning job"},
+{t:"Security Guard",d:"Day and night shifts"},
+{t:"Farm Worker",d:"Agriculture support job"},
+{t:"Warehouse Assistant",d:"Loading and sorting goods"},
+{t:"Freelance Writer",d:"Write articles online"},
+{t:"Graphic Designer Intern",d:"Design posters and logos"},
+{t:"Video Editor Job",d:"Edit TikTok and YouTube videos"},
+{t:"Social Media Manager",d:"Manage business pages"},
+{t:"Data Analyst Trainee",d:"Learn data skills"},
+{t:"Customer Care Online",d:"Chat support job"},
+{t:"UI/UX Intern",d:"Design mobile apps"},
+{t:"IT Support Assistant",d:"Fix computers"},
+{t:"Photographer Assistant",d:"Help in events"},
+{t:"Sales Representative",d:"Sell products locally"}
+],
 
-let res=await fetch("https://remotive.com/api/remote-jobs");
-let data=await res.json();
+scholarships:[
+{t:"Google Africa Scholarship",d:"Learn tech skills free"},
+{t:"Commonwealth Scholarship",d:"Study abroad fully funded"},
+{t:"Mastercard Foundation Scholarship",d:"University funding"},
+{t:"UN Youth Program",d:"Leadership training"},
+{t:"DAAD Germany Scholarship",d:"Study in Germany"},
+{t:"Chevening Scholarship",d:"UK government scholarship"},
+{t:"African Union Scholarship",d:"Pan Africa program"},
+{t:"Japan MEXT Scholarship",d:"Study in Japan"},
+{t:"Erasmus+ Scholarship",d:"Study in Europe"},
+{t:"Korean Government Scholarship",d:"Study in Korea"},
+{t:"USA Fulbright Program",d:"Study in USA"},
+{t:"Stanford Africa Program",d:"Leadership training"},
+{t:"World Bank Internship",d:"Global internship"},
+{t:"UNICEF Youth Program",d:"Youth development"},
+{t:"Rotary Peace Scholarship",d:"Peace studies"},
+{t:"Islamic Development Scholarship",d:"Education funding"},
+{t:"African Leadership University Grant",d:"Tuition support"},
+{t:"Huawei Scholarship",d:"Tech education"},
+{t:"Facebook University Program",d:"Engineering training"},
+{t:"British Council Scholarship",d:"Study support"}
+],
 
-currentData=data.jobs.slice(0,20).map(j=>({
-title:j.title,
-desc:j.company_name + " - " + j.category
-}));
+hustles:[
+{t:"TikTok Content Creator",d:"Earn from views"},
+{t:"Phone Repair Business",d:"Fix phones locally"},
+{t:"Car Washing Service",d:"Start small business"},
+{t:"Hair Braiding Business",d:"Local salon service"},
+{t:"Shoes Reselling",d:"Buy and sell shoes"},
+{t:"Food Delivery Business",d:"Deliver meals locally"},
+{t:"Photography Service",d:"Event photos"},
+{t:"Freelance Writing",d:"Online writing jobs"},
+{t:"Graphic Design Hustle",d:"Make logos"},
+{t:"YouTube Channel",d:"Make videos"},
+{t:"Print T-shirt Business",d:"Custom shirts"},
+{t:"Online Tutoring",d:"Teach students"},
+{t:"Phone Accessories Selling",d:"Sell chargers and cases"},
+{t:"Baking Business",d:"Sell cakes"},
+{t:"Cleaning Service",d:"Home cleaning"},
+{t:"DJ Services",d:"Events DJ"},
+{t:"Laptop Repair",d:"Fix computers"},
+{t:"Social Media Ads Service",d:"Help businesses"},
+{t:"Agriculture Farming",d:"Grow crops"},
+{t:"Mini Transport Service",d:"Bike taxi business"}
+],
 
+business:[
+{t:"Mini Restaurant",d:"Start small food shop"},
+{t:"Clothing Store",d:"Sell fashion items"},
+{t:"Barber Shop",d:"Hair cutting business"},
+{t:"Phone Shop",d:"Sell mobile phones"},
+{t:"Internet Café",d:"Computer services"},
+{t:"Agriculture Farm",d:"Crop farming business"},
+{t:"Bakery Business",d:"Bread and cakes"},
+{t:"Car Wash Station",d:"Vehicle cleaning"},
+{t:"Printing Business",d:"Print documents"},
+{t:"Online Shop",d:"Sell products online"},
+{t:"Fish Farming",d:"Aquaculture business"},
+{t:"Pig Farming",d:"Animal farming"},
+{t:"Taxi Business",d:"Transport service"},
+{t:"Laundry Business",d:"Clothes washing"},
+{t:"Event Planning",d:"Organize events"},
+{t:"Beauty Salon",d:"Hair and nails"},
+{t:"Hardware Shop",d:"Building materials"},
+{t:"Cyber Security Startup",d:"Tech business"},
+{t:"Delivery Company",d:"Courier services"},
+{t:"Import/Export Business",d:"Trade goods"}
+]
+};
+
+let saved=JSON.parse(localStorage.getItem("saved"))||[];
+
+function switchTab(t){
+tab=t;
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+event.target.classList.add("active");
 render();
 }
 
-// 🎓 SCHOLARSHIPS (SIMULATED LIVE FEED)
-function loadScholarships(){
-currentData=[
-{title:"Google Africa Scholarship",desc:"Learn tech skills"},
-{title:"UN Youth Program",desc:"Global leadership program"},
-{title:"Commonwealth Scholarship",desc:"Study abroad fully funded"}
-];
-render();
+function saveItem(item){
+saved.push(item);
+localStorage.setItem("saved",JSON.stringify(saved));
+alert("Saved!");
 }
 
-// 💡 HUSTLES (UPDATED IDEAS)
-function loadHustles(){
-currentData=[
-{title:"TikTok Content Monetization",desc:"Earn from videos"},
-{title:"Phone Accessories Business",desc:"Sell in your area"},
-{title:"Freelance Writing",desc:"Write articles online"}
-];
-render();
+function match(item,q){
+return item.t.toLowerCase().includes(q)||item.d.toLowerCase().includes(q);
 }
 
-// 🔍 SEARCH
-function filter(){
+function render(){
 let q=document.getElementById("search").value.toLowerCase();
-let filtered=currentData.filter(i=>
-i.title.toLowerCase().includes(q) ||
-i.desc.toLowerCase().includes(q)
-);
-render(filtered);
-}
+let list=[];
 
-// 📄 RENDER
-function render(data=currentData){
+if(tab=="jobs") list=data.jobs;
+if(tab=="scholarships") list=data.scholarships;
+if(tab=="hustles") list=data.hustles;
+if(tab=="business") list=data.business;
+if(tab=="saved") list=saved;
+
 let c=document.getElementById("content");
 c.innerHTML="";
 
-data.forEach(i=>{
+list.filter(i=>match(i,q)).forEach(i=>{
 c.innerHTML+=`
 <div class="card">
-<b>${i.title}</b>
-<p class="small">${i.desc}</p>
+<b>${i.t}</b>
+<p class="small">${i.d}</p>
+<button onclick='saveItem(${JSON.stringify(i)})'>Save</button>
 </div>
 `;
 });
 }
 
-// default load
-loadJobs();
+render();
 
 </script>
 
