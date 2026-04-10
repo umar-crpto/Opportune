@@ -2,157 +2,65 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opportune</title>
+<title>Opportune Live</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:white;}
 header{padding:15px;text-align:center;background:#111827;font-size:22px;font-weight:bold;}
-.tabs{display:flex;justify-content:space-around;background:#1f2937;padding:10px;}
-.tab{cursor:pointer;font-size:13px;}
-.active{color:#22c55e;font-weight:bold;}
 input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;}
 .card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;}
 button{padding:6px;border:none;border-radius:6px;background:#22c55e;}
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#000000cc;display:none;justify-content:center;align-items:center;}
-.modal-content{background:#1e293b;padding:15px;border-radius:10px;width:90%;}
 </style>
 </head>
 
 <body>
 
-<header>Opportune 🚀</header>
+<header>Opportune 🌍 (Live Jobs)</header>
 
-<div class="tabs">
-<div class="tab active" onclick="switchTab('jobs')">Jobs</div>
-<div class="tab" onclick="switchTab('business')">Business</div>
-<div class="tab" onclick="switchTab('hustles')">Hustles</div>
-<div class="tab" onclick="switchTab('scholarships')">Scholarships</div>
-<div class="tab" onclick="switchTab('saved')">Saved</div>
-</div>
+<input id="search" placeholder="Search jobs..." onkeyup="render()">
 
-<input id="search" placeholder="Search..." onkeyup="render()">
-
-<div id="content"></div>
-
-<div class="modal" id="modal">
-<div class="modal-content">
-<h3 id="title"></h3>
-<p id="desc"></p>
-<p id="money"></p>
-<p id="steps"></p>
-<button onclick="closeModal()">Close</button>
-</div>
-</div>
+<div id="content">Loading real jobs...</div>
 
 <script>
 
-let tab="jobs";
-
-/* REAL DATA */
-
-let data={
-jobs:[
-{t:"Software Developer",d:"Build apps and websites",c:"$0-$200",e:"$500-$5000/mo",s:"Learn coding → Build projects → Apply"},
-{t:"Graphic Designer",d:"Design logos",c:"$50",e:"$300-$2000/mo",s:"Learn Canva → Get clients"},
-{t:"Video Editor",d:"Edit videos",c:"$0",e:"$200-$3000/mo",s:"Practice → Freelance"},
-{t:"Web Developer",d:"Build websites",c:"$0",e:"$500-$5000/mo",s:"Learn HTML/CSS"},
-{t:"Data Analyst",d:"Analyze data",c:"$0",e:"$500-$4000/mo",s:"Learn Excel → Python"},
-{t:"Social Media Manager",d:"Manage pages",c:"$0",e:"$200-$1500/mo",s:"Grow pages"},
-{t:"IT Support",d:"Fix computers",c:"$50",e:"$200-$1000/mo",s:"Learn basics"},
-{t:"Online Tutor",d:"Teach online",c:"$0",e:"$200-$2000/mo",s:"Pick subject"},
-{t:"Photographer",d:"Take photos",c:"$100",e:"$300-$2000/mo",s:"Practice"},
-{t:"App Tester",d:"Test apps",c:"$0",e:"$100-$1000/mo",s:"Join platforms"}
-],
-
-business:[
-{t:"Restaurant",d:"Sell food",c:"$500",e:"$500-$5000/mo",s:"Cook → Sell"},
-{t:"Clothing Shop",d:"Sell clothes",c:"$300",e:"$300-$3000/mo",s:"Buy → Sell"},
-{t:"Car Wash",d:"Clean cars",c:"$200",e:"$200-$1500/mo",s:"Start small"},
-{t:"Salon",d:"Hair business",c:"$400",e:"$400-$3000/mo",s:"Open shop"},
-{t:"Phone Shop",d:"Sell phones",c:"$500",e:"$500-$4000/mo",s:"Buy stock"},
-{t:"Bakery",d:"Make bread",c:"$300",e:"$300-$2500/mo",s:"Bake"},
-{t:"Delivery Service",d:"Deliver goods",c:"$200",e:"$200-$2000/mo",s:"Use bike"},
-{t:"Cyber Cafe",d:"Internet business",c:"$600",e:"$400-$3000/mo",s:"Setup"},
-{t:"Laundry",d:"Wash clothes",c:"$200",e:"$200-$1500/mo",s:"Start"},
-{t:"Farm",d:"Agriculture",c:"$300",e:"$300-$3000/mo",s:"Grow crops"}
-],
-
-hustles:[
-{t:"Freelancing",d:"Work online",c:"$0",e:"$200-$3000/mo",s:"Create account"},
-{t:"YouTube",d:"Make videos",c:"$0",e:"$100-$5000/mo",s:"Post"},
-{t:"TikTok",d:"Content creation",c:"$0",e:"$100-$3000/mo",s:"Post daily"},
-{t:"Dropshipping",d:"Sell online",c:"$50",e:"$200-$5000/mo",s:"Find product"},
-{t:"Photography",d:"Take photos",c:"$100",e:"$300-$2000/mo",s:"Shoot"},
-{t:"Phone Repair",d:"Fix phones",c:"$50",e:"$200-$1500/mo",s:"Learn"},
-{t:"Reselling",d:"Buy & sell",c:"$100",e:"$200-$2000/mo",s:"Flip items"},
-{t:"Tutoring",d:"Teach",c:"$0",e:"$200-$1000/mo",s:"Start"},
-{t:"Blogging",d:"Write online",c:"$0",e:"$100-$2000/mo",s:"Write"},
-{t:"Affiliate Marketing",d:"Promote products",c:"$0",e:"$200-$4000/mo",s:"Share links"}
-],
-
-scholarships:[
-{t:"Chevening",d:"Study UK",c:"Free",e:"Full funding",s:"Apply"},
-{t:"DAAD",d:"Germany",c:"Free",e:"Full funding",s:"Apply"},
-{t:"MEXT",d:"Japan",c:"Free",e:"Full funding",s:"Apply"},
-{t:"Fulbright",d:"USA",c:"Free",e:"Full funding",s:"Apply"},
-{t:"Erasmus",d:"Europe",c:"Free",e:"Full funding",s:"Apply"},
-{t:"Mastercard",d:"Africa",c:"Free",e:"Full funding",s:"Apply"},
-{t:"Commonwealth",d:"UK",c:"Free",e:"Full funding",s:"Apply"},
-{t:"Google",d:"Tech",c:"Free",e:"Training",s:"Apply"},
-{t:"AU",d:"Africa",c:"Free",e:"Funding",s:"Apply"},
-{t:"Korea",d:"Study Korea",c:"Free",e:"Full funding",s:"Apply"}
-]
-};
-
+let jobs=[];
 let saved=JSON.parse(localStorage.getItem("saved"))||[];
 
-/* FUNCTIONS */
-
-function switchTab(t){
-tab=t;
-document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-event.target.classList.add("active");
+/* FETCH REAL JOBS */
+fetch("https://remotive.com/api/remote-jobs")
+.then(res=>res.json())
+.then(data=>{
+jobs=data.jobs.slice(0,50); // limit for speed
 render();
-}
+})
+.catch(()=>{
+content.innerHTML="⚠️ Failed to load jobs. Check internet.";
+});
 
-function saveItem(item){
-if(!saved.find(s=>s.t===item.t)){
-saved.push(item);
+/* SAVE */
+function saveJob(job){
+if(!saved.find(s=>s.id===job.id)){
+saved.push(job);
 localStorage.setItem("saved",JSON.stringify(saved));
 alert("Saved!");
 }
 }
 
-function openModal(item){
-modal.style.display="flex";
-title.innerText=item.t;
-desc.innerText=item.d;
-money.innerText="💰 Cost: "+item.c+" | 📈 Earn: "+item.e;
-steps.innerText="🧠 "+item.s;
-}
-
-function closeModal(){
-modal.style.display="none";
-}
-
+/* RENDER */
 function render(){
 let q=search.value.toLowerCase();
-let list=(tab=="saved")?saved:data[tab];
-
 content.innerHTML="";
 
-list.filter(i=>i.t.toLowerCase().includes(q)).forEach(i=>{
+jobs.filter(j=>j.title.toLowerCase().includes(q)).forEach(j=>{
 content.innerHTML+=`
 <div class="card">
-<b onclick='openModal(${JSON.stringify(i)})'>${i.t}</b>
-<p>${i.d}</p>
-<button onclick='saveItem(${JSON.stringify(i)})'>Save</button>
+<b>${j.title}</b>
+<p>${j.company_name}</p>
+<button onclick='saveJob(${JSON.stringify(j)})'>Save</button>
 </div>
 `;
 });
 }
-
-render();
 
 </script>
 
