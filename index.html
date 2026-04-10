@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Opportune</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:white;}
 header{padding:15px;text-align:center;background:#111827;font-size:22px;font-weight:bold;}
-.tabs{display:flex;flex-wrap:wrap;justify-content:space-around;background:#1f2937;padding:10px;}
-.tab{cursor:pointer;font-size:12px;}
+.tabs{display:flex;justify-content:space-around;background:#1f2937;padding:10px;}
+.tab{cursor:pointer;font-size:13px;}
 .active{color:#22c55e;font-weight:bold;}
 input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;}
 .card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;}
@@ -21,7 +20,7 @@ button{padding:6px;border:none;border-radius:6px;background:#22c55e;}
 
 <body>
 
-<header>Opportune 🌍</header>
+<header>Opportune 🚀</header>
 
 <div class="tabs">
 <div class="tab active" onclick="switchTab('jobs')">Jobs</div>
@@ -49,62 +48,60 @@ button{padding:6px;border:none;border-radius:6px;background:#22c55e;}
 
 let tab="jobs";
 
-/* REAL DATA (NOT REPEATED) */
+/* REAL DATA */
 
 let data={
-
 jobs:[
-{t:"Software Developer",d:"Build apps and websites",cost:"$0-$200",earn:"$500-$5000/mo",steps:"Learn coding → Build projects → Apply jobs"},
-{t:"Graphic Designer",d:"Design logos and posters",cost:"$50",earn:"$300-$2000/mo",steps:"Learn design → Use Canva → Get clients"},
-{t:"Video Editor",d:"Edit videos for creators",cost:"$0",earn:"$200-$3000/mo",steps:"Learn editing → Practice → Freelance"},
-{t:"Data Entry Clerk",d:"Input data online",cost:"$0",earn:"$100-$800/mo",steps:"Apply online → Work remote"},
-{t:"Social Media Manager",d:"Manage pages",cost:"$0",earn:"$200-$1500/mo",steps:"Learn social media → Get clients"},
-{t:"Web Developer",d:"Build websites",cost:"$0",earn:"$500-$5000/mo",steps:"Learn HTML → Build sites"},
-{t:"IT Support",d:"Fix computers",cost:"$50",earn:"$200-$1000/mo",steps:"Learn basics → Help people"},
-{t:"Online Tutor",d:"Teach students",cost:"$0",earn:"$200-$2000/mo",steps:"Choose subject → Teach online"},
-{t:"Photographer",d:"Take event photos",cost:"$100",earn:"$300-$2000/mo",steps:"Get camera → Start small"},
-{t:"App Tester",d:"Test apps",cost:"$0",earn:"$100-$1000/mo",steps:"Join platforms → Test apps"}
+{t:"Software Developer",d:"Build apps and websites",c:"$0-$200",e:"$500-$5000/mo",s:"Learn coding → Build projects → Apply"},
+{t:"Graphic Designer",d:"Design logos",c:"$50",e:"$300-$2000/mo",s:"Learn Canva → Get clients"},
+{t:"Video Editor",d:"Edit videos",c:"$0",e:"$200-$3000/mo",s:"Practice → Freelance"},
+{t:"Web Developer",d:"Build websites",c:"$0",e:"$500-$5000/mo",s:"Learn HTML/CSS"},
+{t:"Data Analyst",d:"Analyze data",c:"$0",e:"$500-$4000/mo",s:"Learn Excel → Python"},
+{t:"Social Media Manager",d:"Manage pages",c:"$0",e:"$200-$1500/mo",s:"Grow pages"},
+{t:"IT Support",d:"Fix computers",c:"$50",e:"$200-$1000/mo",s:"Learn basics"},
+{t:"Online Tutor",d:"Teach online",c:"$0",e:"$200-$2000/mo",s:"Pick subject"},
+{t:"Photographer",d:"Take photos",c:"$100",e:"$300-$2000/mo",s:"Practice"},
+{t:"App Tester",d:"Test apps",c:"$0",e:"$100-$1000/mo",s:"Join platforms"}
 ],
 
 business:[
-{t:"Restaurant",d:"Sell food",cost:"$500",earn:"$500-$5000/mo",steps:"Find location → Cook → Sell"},
-{t:"Clothing Shop",d:"Sell clothes",cost:"$300",earn:"$300-$3000/mo",steps:"Buy stock → Sell"},
-{t:"Car Wash",d:"Clean cars",cost:"$200",earn:"$200-$1500/mo",steps:"Start small → Grow"},
-{t:"Salon",d:"Hair and beauty",cost:"$400",earn:"$400-$3000/mo",steps:"Learn → Open shop"},
-{t:"Phone Shop",d:"Sell phones",cost:"$500",earn:"$500-$4000/mo",steps:"Buy → Sell"},
-{t:"Bakery",d:"Make bread",cost:"$300",earn:"$300-$2500/mo",steps:"Bake → Sell"},
-{t:"Delivery Service",d:"Deliver goods",cost:"$200",earn:"$200-$2000/mo",steps:"Use bike → Deliver"},
-{t:"Cyber Cafe",d:"Internet services",cost:"$600",earn:"$400-$3000/mo",steps:"Setup → Charge users"},
-{t:"Laundry",d:"Wash clothes",cost:"$200",earn:"$200-$1500/mo",steps:"Start → Serve clients"},
-{t:"Farm Business",d:"Grow crops",cost:"$300",earn:"$300-$3000/mo",steps:"Plant → Sell"}
+{t:"Restaurant",d:"Sell food",c:"$500",e:"$500-$5000/mo",s:"Cook → Sell"},
+{t:"Clothing Shop",d:"Sell clothes",c:"$300",e:"$300-$3000/mo",s:"Buy → Sell"},
+{t:"Car Wash",d:"Clean cars",c:"$200",e:"$200-$1500/mo",s:"Start small"},
+{t:"Salon",d:"Hair business",c:"$400",e:"$400-$3000/mo",s:"Open shop"},
+{t:"Phone Shop",d:"Sell phones",c:"$500",e:"$500-$4000/mo",s:"Buy stock"},
+{t:"Bakery",d:"Make bread",c:"$300",e:"$300-$2500/mo",s:"Bake"},
+{t:"Delivery Service",d:"Deliver goods",c:"$200",e:"$200-$2000/mo",s:"Use bike"},
+{t:"Cyber Cafe",d:"Internet business",c:"$600",e:"$400-$3000/mo",s:"Setup"},
+{t:"Laundry",d:"Wash clothes",c:"$200",e:"$200-$1500/mo",s:"Start"},
+{t:"Farm",d:"Agriculture",c:"$300",e:"$300-$3000/mo",s:"Grow crops"}
 ],
 
 hustles:[
-{t:"Freelancing",d:"Work online",cost:"$0",earn:"$200-$3000/mo",steps:"Create account → Work"},
-{t:"YouTube",d:"Create videos",cost:"$0",earn:"$100-$5000/mo",steps:"Post videos → Grow"},
-{t:"TikTok Creator",d:"Make content",cost:"$0",earn:"$100-$3000/mo",steps:"Post daily"},
-{t:"Dropshipping",d:"Sell online",cost:"$50",earn:"$200-$5000/mo",steps:"Find product → Sell"},
-{t:"Graphic Design",d:"Design work",cost:"$0",earn:"$200-$2000/mo",steps:"Learn → Sell"},
-{t:"Photography",d:"Take photos",cost:"$100",earn:"$300-$2000/mo",steps:"Shoot → Sell"},
-{t:"Phone Repair",d:"Fix phones",cost:"$50",earn:"$200-$1500/mo",steps:"Learn → Fix"},
-{t:"Reselling",d:"Buy and sell",cost:"$100",earn:"$200-$2000/mo",steps:"Buy cheap → Sell"},
-{t:"Tutoring",d:"Teach others",cost:"$0",earn:"$200-$1000/mo",steps:"Teach → Earn"},
-{t:"Blogging",d:"Write online",cost:"$0",earn:"$100-$2000/mo",steps:"Write → Monetize"}
+{t:"Freelancing",d:"Work online",c:"$0",e:"$200-$3000/mo",s:"Create account"},
+{t:"YouTube",d:"Make videos",c:"$0",e:"$100-$5000/mo",s:"Post"},
+{t:"TikTok",d:"Content creation",c:"$0",e:"$100-$3000/mo",s:"Post daily"},
+{t:"Dropshipping",d:"Sell online",c:"$50",e:"$200-$5000/mo",s:"Find product"},
+{t:"Photography",d:"Take photos",c:"$100",e:"$300-$2000/mo",s:"Shoot"},
+{t:"Phone Repair",d:"Fix phones",c:"$50",e:"$200-$1500/mo",s:"Learn"},
+{t:"Reselling",d:"Buy & sell",c:"$100",e:"$200-$2000/mo",s:"Flip items"},
+{t:"Tutoring",d:"Teach",c:"$0",e:"$200-$1000/mo",s:"Start"},
+{t:"Blogging",d:"Write online",c:"$0",e:"$100-$2000/mo",s:"Write"},
+{t:"Affiliate Marketing",d:"Promote products",c:"$0",e:"$200-$4000/mo",s:"Share links"}
 ],
 
 scholarships:[
-{t:"Chevening Scholarship",d:"Study in UK",cost:"Free",earn:"Full funding",steps:"Apply → Get selected"},
-{t:"DAAD Scholarship",d:"Study Germany",cost:"Free",earn:"Full funding",steps:"Apply online"},
-{t:"MEXT Japan",d:"Study Japan",cost:"Free",earn:"Full funding",steps:"Apply embassy"},
-{t:"Fulbright USA",d:"Study USA",cost:"Free",earn:"Full funding",steps:"Apply"},
-{t:"Erasmus+",d:"Study Europe",cost:"Free",earn:"Full funding",steps:"Apply"},
-{t:"Mastercard Foundation",d:"Africa students",cost:"Free",earn:"Full funding",steps:"Apply"},
-{t:"Commonwealth",d:"UK study",cost:"Free",earn:"Full funding",steps:"Apply"},
-{t:"Google Scholarship",d:"Tech skills",cost:"Free",earn:"Free training",steps:"Apply"},
-{t:"AU Scholarship",d:"Africa",cost:"Free",earn:"Funding",steps:"Apply"},
-{t:"Korea Scholarship",d:"Study Korea",cost:"Free",earn:"Full funding",steps:"Apply"}
+{t:"Chevening",d:"Study UK",c:"Free",e:"Full funding",s:"Apply"},
+{t:"DAAD",d:"Germany",c:"Free",e:"Full funding",s:"Apply"},
+{t:"MEXT",d:"Japan",c:"Free",e:"Full funding",s:"Apply"},
+{t:"Fulbright",d:"USA",c:"Free",e:"Full funding",s:"Apply"},
+{t:"Erasmus",d:"Europe",c:"Free",e:"Full funding",s:"Apply"},
+{t:"Mastercard",d:"Africa",c:"Free",e:"Full funding",s:"Apply"},
+{t:"Commonwealth",d:"UK",c:"Free",e:"Full funding",s:"Apply"},
+{t:"Google",d:"Tech",c:"Free",e:"Training",s:"Apply"},
+{t:"AU",d:"Africa",c:"Free",e:"Funding",s:"Apply"},
+{t:"Korea",d:"Study Korea",c:"Free",e:"Full funding",s:"Apply"}
 ]
-
 };
 
 let saved=JSON.parse(localStorage.getItem("saved"))||[];
@@ -127,11 +124,11 @@ alert("Saved!");
 }
 
 function openModal(item){
-document.getElementById("modal").style.display="flex";
+modal.style.display="flex";
 title.innerText=item.t;
 desc.innerText=item.d;
-money.innerText="💰 Cost: "+item.cost+" | 📈 Earn: "+item.earn;
-steps.innerText="🧠 "+item.steps;
+money.innerText="💰 Cost: "+item.c+" | 📈 Earn: "+item.e;
+steps.innerText="🧠 "+item.s;
 }
 
 function closeModal(){
