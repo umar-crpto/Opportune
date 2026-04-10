@@ -1,181 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opportune</title>
+<title>Opportune Live</title>
 
 <style>
-body{
-font-family: Arial;
-margin:0;
-background:#0f172a;
-color:white;
-}
-
-header{
-background:#111827;
-padding:15px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-}
-
-.search{
-padding:10px;
-text-align:center;
-}
-
-input{
-width:90%;
-padding:10px;
-border-radius:10px;
-border:none;
-outline:none;
-}
-
-.tabs{
-display:flex;
-justify-content:space-around;
-background:#1f2937;
-padding:10px;
-}
-
-.tab{
-cursor:pointer;
-padding:8px;
-font-size:14px;
-}
-
-.active{
-color:#22c55e;
-font-weight:bold;
-}
-
-.card{
-background:#1e293b;
-margin:10px;
-padding:10px;
-border-radius:10px;
-}
-
-button{
-padding:5px 10px;
-margin-top:5px;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-
-.save{
-background:#22c55e;
-color:black;
-}
-
-.small{
-font-size:12px;
-opacity:0.8;
-}
-
-.hidden{display:none;}
+body{font-family:Arial;margin:0;background:#0f172a;color:white;}
+header{padding:15px;text-align:center;background:#111827;font-size:20px;font-weight:bold;}
+.card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;}
+button{padding:6px;border:none;border-radius:6px;background:#22c55e;}
+.small{font-size:12px;opacity:0.8;}
+.tabs{display:flex;justify-content:space-around;background:#1f2937;padding:10px;}
+.tab{cursor:pointer;}
+.active{color:#22c55e;font-weight:bold;}
+input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;}
 </style>
 </head>
 
 <body>
 
-<header>Opportune</header>
-
-<div class="search">
-<input id="search" placeholder="Search jobs, scholarships, hustles..." onkeyup="render()">
-</div>
+<header>Opportune LIVE 🌍</header>
 
 <div class="tabs">
-<div class="tab active" onclick="switchTab('jobs')">Jobs</div>
-<div class="tab" onclick="switchTab('scholarships')">Scholarships</div>
-<div class="tab" onclick="switchTab('hustles')">Hustles</div>
-<div class="tab" onclick="switchTab('business')">Business</div>
-<div class="tab" onclick="switchTab('saved')">Saved</div>
+<div class="tab active" onclick="loadJobs()">Jobs</div>
+<div class="tab" onclick="loadScholarships()">Scholarships</div>
+<div class="tab" onclick="loadHustles()">Hustles</div>
 </div>
+
+<input id="search" placeholder="Search..." onkeyup="filter()">
 
 <div id="content"></div>
 
 <script>
 
-let tab="jobs";
+let currentData=[];
 
-let data={
-jobs:[
-{title:"Shop Assistant Job",desc:"Kampala supermarket hiring staff",type:"job"},
-{title:"Remote Data Entry",desc:"Work online from home",type:"job"},
-{title:"Internship at Tech Company",desc:"Learn software development",type:"job"}
-],
+// 🌍 LIVE JOBS (REMOTE API)
+async function loadJobs(){
+document.getElementById("content").innerHTML="Loading jobs...";
 
-scholarships:[
-{title:"Uganda University Scholarship",desc:"Full tuition support",type:"scholarship"},
-{title:"African Leaders Program",desc:"Study abroad opportunity",type:"scholarship"}
-],
+let res=await fetch("https://remotive.com/api/remote-jobs");
+let data=await res.json();
 
-hustles:[
-{title:"Phone Repair Business",desc:"Start with small capital",type:"hustle"},
-{title:"TikTok Content Creation",desc:"Earn from brand deals",type:"hustle"}
-],
+currentData=data.jobs.slice(0,20).map(j=>({
+title:j.title,
+desc:j.company_name + " - " + j.category
+}));
 
-business:[
-{title:"Mini Food Delivery",desc:"Start local food delivery service",type:"business"},
-{title:"Clothes Reselling",desc:"Buy and resell fashion items",type:"business"}
-]
-};
-
-let saved=JSON.parse(localStorage.getItem("saved"))||[];
-
-function switchTab(t){
-tab=t;
-document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-event.target.classList.add("active");
 render();
 }
 
-function saveItem(item){
-saved.push(item);
-localStorage.setItem("saved",JSON.stringify(saved));
-alert("Saved!");
+// 🎓 SCHOLARSHIPS (SIMULATED LIVE FEED)
+function loadScholarships(){
+currentData=[
+{title:"Google Africa Scholarship",desc:"Learn tech skills"},
+{title:"UN Youth Program",desc:"Global leadership program"},
+{title:"Commonwealth Scholarship",desc:"Study abroad fully funded"}
+];
+render();
 }
 
-function matchSearch(item,query){
-return item.title.toLowerCase().includes(query)||item.desc.toLowerCase().includes(query);
+// 💡 HUSTLES (UPDATED IDEAS)
+function loadHustles(){
+currentData=[
+{title:"TikTok Content Monetization",desc:"Earn from videos"},
+{title:"Phone Accessories Business",desc:"Sell in your area"},
+{title:"Freelance Writing",desc:"Write articles online"}
+];
+render();
 }
 
-function render(){
-
+// 🔍 SEARCH
+function filter(){
 let q=document.getElementById("search").value.toLowerCase();
-let container=document.getElementById("content");
-container.innerHTML="";
-
-let list=[];
-
-if(tab=="jobs") list=data.jobs;
-if(tab=="scholarships") list=data.scholarships;
-if(tab=="hustles") list=data.hustles;
-if(tab=="business") list=data.business;
-if(tab=="saved") list=saved;
-
-if(list.length==0){
-container.innerHTML="<p style='text-align:center'>No data yet</p>";
-return;
+let filtered=currentData.filter(i=>
+i.title.toLowerCase().includes(q) ||
+i.desc.toLowerCase().includes(q)
+);
+render(filtered);
 }
 
-list.filter(i=>matchSearch(i,q)).forEach(i=>{
-container.innerHTML+=`
+// 📄 RENDER
+function render(data=currentData){
+let c=document.getElementById("content");
+c.innerHTML="";
+
+data.forEach(i=>{
+c.innerHTML+=`
 <div class="card">
 <b>${i.title}</b>
 <p class="small">${i.desc}</p>
-<button class="save" onclick='saveItem(${JSON.stringify(i)})'>Save</button>
 </div>
 `;
 });
 }
 
-render();
+// default load
+loadJobs();
 
 </script>
 
