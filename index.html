@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opportune</title>
+<title>Opportune Pro</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:white;}
 header{padding:15px;text-align:center;background:#111827;font-size:22px;font-weight:bold;}
 .tabs{display:flex;justify-content:space-around;background:#1f2937;padding:10px;position:sticky;top:0;}
-.tab{cursor:pointer;font-size:14px;}
+.tab{cursor:pointer;font-size:13px;}
 .active{color:#22c55e;font-weight:bold;}
 input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;outline:none;}
 .card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;}
@@ -20,7 +20,7 @@ button{padding:6px 10px;border:none;border-radius:6px;background:#22c55e;cursor:
 
 <body>
 
-<header>Opportune 🌍</header>
+<header>Opportune 🚀</header>
 
 <div class="tabs">
 <div class="tab active" onclick="switchTab('jobs')">Jobs</div>
@@ -39,97 +39,46 @@ button{padding:6px 10px;border:none;border-radius:6px;background:#22c55e;cursor:
 let tab="jobs";
 
 let data={
+
 jobs:[
-{t:"Shop Assistant Kampala",d:"Retail store hiring staff"},
-{t:"Hotel Receptionist",d:"Entry level hotel job"},
-{t:"Remote Data Entry Job",d:"Work from home typing tasks"},
-{t:"Delivery Rider Job",d:"Motorbike delivery in city"},
-{t:"Intern Software Developer",d:"Learn coding on job"},
-{t:"Call Center Agent",d:"Customer support role"},
-{t:"Cleaner Job",d:"Office cleaning job"},
-{t:"Security Guard",d:"Day and night shifts"},
-{t:"Farm Worker",d:"Agriculture support job"},
-{t:"Warehouse Assistant",d:"Loading and sorting goods"},
-{t:"Freelance Writer",d:"Write articles online"},
-{t:"Graphic Designer Intern",d:"Design posters and logos"},
-{t:"Video Editor Job",d:"Edit TikTok and YouTube videos"},
-{t:"Social Media Manager",d:"Manage business pages"},
-{t:"Data Analyst Trainee",d:"Learn data skills"},
-{t:"Customer Care Online",d:"Chat support job"},
-{t:"UI/UX Intern",d:"Design mobile apps"},
-{t:"IT Support Assistant",d:"Fix computers"},
-{t:"Photographer Assistant",d:"Help in events"},
-{t:"Sales Representative",d:"Sell products locally"}
-],
+"Software Developer","Data Analyst","Remote Customer Support","Freelance Writer","Graphic Designer",
+"UI/UX Designer","Video Editor","Web Developer","App Tester","Cybersecurity Intern",
+"AI Trainer","Cloud Support Engineer","Digital Marketer","Sales Representative","Accountant Trainee",
+"Virtual Assistant","Remote Tutor","IT Support Technician","Network Assistant","Product Manager Intern",
+"Social Media Manager","Content Creator","Data Entry Clerk","Translator","Project Assistant",
+"HR Assistant","Research Assistant","Business Analyst Intern","Mobile App Developer","Game Tester"
+].map(t=>({t,d:"High paying professional opportunity"})),
 
 scholarships:[
-{t:"Google Africa Scholarship",d:"Learn tech skills free"},
-{t:"Commonwealth Scholarship",d:"Study abroad fully funded"},
-{t:"Mastercard Foundation Scholarship",d:"University funding"},
-{t:"UN Youth Program",d:"Leadership training"},
-{t:"DAAD Germany Scholarship",d:"Study in Germany"},
-{t:"Chevening Scholarship",d:"UK government scholarship"},
-{t:"African Union Scholarship",d:"Pan Africa program"},
-{t:"Japan MEXT Scholarship",d:"Study in Japan"},
-{t:"Erasmus+ Scholarship",d:"Study in Europe"},
-{t:"Korean Government Scholarship",d:"Study in Korea"},
-{t:"USA Fulbright Program",d:"Study in USA"},
-{t:"Stanford Africa Program",d:"Leadership training"},
-{t:"World Bank Internship",d:"Global internship"},
-{t:"UNICEF Youth Program",d:"Youth development"},
-{t:"Rotary Peace Scholarship",d:"Peace studies"},
-{t:"Islamic Development Scholarship",d:"Education funding"},
-{t:"African Leadership University Grant",d:"Tuition support"},
-{t:"Huawei Scholarship",d:"Tech education"},
-{t:"Facebook University Program",d:"Engineering training"},
-{t:"British Council Scholarship",d:"Study support"}
-],
+"Mastercard Foundation Scholarship","Commonwealth Scholarship","Chevening UK Scholarship","DAAD Germany Scholarship",
+"Japan MEXT Scholarship","Fulbright USA Scholarship","Erasmus Mundus Scholarship","African Union Scholarship",
+"Google Africa Scholarship","Microsoft Learn Scholarship","Huawei Scholarship","UN Youth Program",
+"World Bank Internship","Rotary Peace Scholarship","Korean Government Scholarship",
+"Chinese Government Scholarship","Australian Awards Scholarship","Turkey Burslari Scholarship",
+"Swedish Institute Scholarship","Ireland Government Scholarship",
+"Canada Vanier Scholarship","Knight-Hennessy Stanford","ADB Scholarship",
+"IMF Internship Program","UNICEF Youth Program","African Leadership University Grant",
+"Islamic Development Scholarship","Commonwealth Shared Scholarship","Tech Women Program","WHO Internship"
+].map(t=>({t,d:"Fully funded international opportunity"})),
 
 hustles:[
-{t:"TikTok Content Creator",d:"Earn from views"},
-{t:"Phone Repair Business",d:"Fix phones locally"},
-{t:"Car Washing Service",d:"Start small business"},
-{t:"Hair Braiding Business",d:"Local salon service"},
-{t:"Shoes Reselling",d:"Buy and sell shoes"},
-{t:"Food Delivery Business",d:"Deliver meals locally"},
-{t:"Photography Service",d:"Event photos"},
-{t:"Freelance Writing",d:"Online writing jobs"},
-{t:"Graphic Design Hustle",d:"Make logos"},
-{t:"YouTube Channel",d:"Make videos"},
-{t:"Print T-shirt Business",d:"Custom shirts"},
-{t:"Online Tutoring",d:"Teach students"},
-{t:"Phone Accessories Selling",d:"Sell chargers and cases"},
-{t:"Baking Business",d:"Sell cakes"},
-{t:"Cleaning Service",d:"Home cleaning"},
-{t:"DJ Services",d:"Events DJ"},
-{t:"Laptop Repair",d:"Fix computers"},
-{t:"Social Media Ads Service",d:"Help businesses"},
-{t:"Agriculture Farming",d:"Grow crops"},
-{t:"Mini Transport Service",d:"Bike taxi business"}
-],
+"Freelance Copywriting","TikTok Monetization","YouTube Automation","Affiliate Marketing","Dropshipping Business",
+"Print on Demand","Phone Repair Service","Graphic Design Freelancing","Social Media Management","Online Tutoring",
+"App Development Services","Website Building Service","Logo Design Business","Video Editing Agency","AI Content Creation",
+"Forex Trading (Skill-based)","Crypto Research Trading","Photography Business","Drone Videography","Car Washing Service",
+"Food Delivery Service","Laundry Pickup Business","Cleaning Service Business","Barber Mobile Service","Hair Braiding Business",
+"Digital Products Selling","E-book Writing","Online Course Creation","Reselling Sneakers","Import/Export Small Trade"
+].map(t=>({t,d:"High income skill-based hustle"})),
 
 business:[
-{t:"Mini Restaurant",d:"Start small food shop"},
-{t:"Clothing Store",d:"Sell fashion items"},
-{t:"Barber Shop",d:"Hair cutting business"},
-{t:"Phone Shop",d:"Sell mobile phones"},
-{t:"Internet Café",d:"Computer services"},
-{t:"Agriculture Farm",d:"Crop farming business"},
-{t:"Bakery Business",d:"Bread and cakes"},
-{t:"Car Wash Station",d:"Vehicle cleaning"},
-{t:"Printing Business",d:"Print documents"},
-{t:"Online Shop",d:"Sell products online"},
-{t:"Fish Farming",d:"Aquaculture business"},
-{t:"Pig Farming",d:"Animal farming"},
-{t:"Taxi Business",d:"Transport service"},
-{t:"Laundry Business",d:"Clothes washing"},
-{t:"Event Planning",d:"Organize events"},
-{t:"Beauty Salon",d:"Hair and nails"},
-{t:"Hardware Shop",d:"Building materials"},
-{t:"Cyber Security Startup",d:"Tech business"},
-{t:"Delivery Company",d:"Courier services"},
-{t:"Import/Export Business",d:"Trade goods"}
-]
+"Tech Startup","E-commerce Store","Agriculture Farm","Poultry Farming","Fish Farming",
+"Real Estate Agency","Mini Supermarket","Restaurant Business","Bakery Business","Clothing Brand",
+"Phone Accessories Shop","Printing Business","Cyber Café","Delivery Company","Car Wash Station",
+"Beauty Salon","Barber Shop","Hardware Store","Transport Taxi Business","Cleaning Company",
+"Event Planning Business","Marketing Agency","Software Company","Construction Company","Import/Export Company",
+"Furniture Making Business","Solar Installation Business","Water Supply Business","Gym Fitness Center","Education School Center"
+].map(t=>({t,d:"Scalable high-profit business idea"}))
+
 };
 
 let saved=JSON.parse(localStorage.getItem("saved"))||[];
@@ -147,8 +96,8 @@ localStorage.setItem("saved",JSON.stringify(saved));
 alert("Saved!");
 }
 
-function match(item,q){
-return item.t.toLowerCase().includes(q)||item.d.toLowerCase().includes(q);
+function match(i,q){
+return i.t.toLowerCase().includes(q)||i.d.toLowerCase().includes(q);
 }
 
 function render(){
