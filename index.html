@@ -1,168 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Opportune</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opportune</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+/* HEADER */
+header {
+    background:#1e293b;
+    padding:15px;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+}
+
+/* NAV */
+nav {
+    display:flex;
+    justify-content:space-around;
+    background:#111827;
+    padding:10px;
+    position:sticky;
+    top:0;
+}
+
+nav button {
+    background:none;
+    border:none;
+    color:white;
+    font-size:14px;
+}
+
+/* SEARCH */
+#search {
+    width:90%;
+    margin:10px;
+    padding:10px;
+    border-radius:8px;
+    border:none;
+}
+
+/* CARDS */
+.card {
+    background:#1e293b;
+    margin:10px;
+    padding:10px;
+    border-radius:10px;
+}
+
+.card button {
+    margin-top:5px;
+    padding:5px 10px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+/* SECTIONS */
+.section { display:none; }
+.active { display:block; }
+
+.saveBtn { background:green; color:white; }
+.featured { border:2px solid gold; }
+
+</style>
 </head>
 
-<body style="font-family:Arial; margin:0; background:#f5f5f5;">
+<body>
 
-<!-- HEADER -->
-<div style="background:#4CAF50; color:white; padding:15px; text-align:center;">
-  <h2>Opportune</h2>
-  <p>Find Jobs, Scholarships & Opportunities</p>
-</div>
+<header>🚀 OPPORTUNE</header>
 
-<!-- SEARCH -->
-<div style="padding:10px;">
-  <input id="search" placeholder="Search opportunities..." 
-  style="width:100%; padding:10px;" onkeyup="searchItems()">
-</div>
+<nav>
+<button onclick="show('home')">Home</button>
+<button onclick="show('featured')">Featured</button>
+<button onclick="show('saved')">Saved</button>
+<button onclick="show('profile')">Profile</button>
+</nav>
 
-<!-- DAILY TIP -->
-<div style="padding:10px; background:#fff;">
-  💡 Tip: Start small, stay consistent — success comes daily.
-</div>
+<input type="text" id="search" placeholder="Search jobs, scholarships..." onkeyup="render()">
 
-<!-- URGENT -->
-<div style="padding:10px;">
-  <h3>🚨 Urgent Opportunities</h3>
-  <div id="urgent"></div>
-</div>
+<!-- HOME -->
+<div id="home" class="section active"></div>
 
-<!-- TRENDING -->
-<div style="padding:10px;">
-  <h3>🔥 Trending</h3>
-  <div id="trending"></div>
-</div>
-
-<!-- CATEGORIES -->
-<div style="padding:10px;">
-  <h3>📂 Categories</h3>
-  <button onclick="filterCategory('all')">All</button>
-  <button onclick="filterCategory('job')">Jobs</button>
-  <button onclick="filterCategory('scholarship')">Scholarships</button>
-  <button onclick="filterCategory('hustle')">Hustles</button>
-  <button onclick="filterCategory('business')">Business</button>
-</div>
-
-<!-- LIST -->
-<div id="list" style="padding:10px;"></div>
+<!-- FEATURED -->
+<div id="featured" class="section"></div>
 
 <!-- SAVED -->
-<div style="padding:10px;">
-  <h3>💾 Saved</h3>
-  <div id="saved"></div>
-</div>
+<div id="saved" class="section"></div>
 
-<!-- AI -->
-<div style="padding:10px;">
-  <h3>🤖 Ask Opportune AI</h3>
-  <div id="chat" style="height:150px; overflow:auto; background:#fff; padding:10px;"></div>
-  <input id="aiInput" placeholder="Ask anything..." style="width:70%; padding:10px;">
-  <button onclick="askAI()">Send</button>
+<!-- PROFILE -->
+<div id="profile" class="section">
+<h3>Your Stats 📊</h3>
+<p id="stats"></p>
 </div>
 
 <script>
 
-let data = [
-  {title:"Online Writing Job", type:"job", urgent:true},
-  {title:"Scholarship in UK", type:"scholarship", urgent:true},
-  {title:"Start a TikTok Page", type:"hustle"},
-  {title:"Small Food Business", type:"business"},
-  {title:"Remote Data Entry Job", type:"job"},
-  {title:"Canada Scholarship", type:"scholarship"}
+// ---------------- DATA ----------------
+let opportunities = [
+    {id:1, title:"Marketing Job Kampala", type:"Job", featured:true},
+    {id:2, title:"University Scholarship 2026", type:"Scholarship", featured:true},
+    {id:3, title:"Online Writing Side Hustle", type:"Hustle", featured:false},
+    {id:4, title:"Internship at Tech Company", type:"Job", featured:false},
 ];
 
-let saved = JSON.parse(localStorage.getItem("saved")) || [];
-
-function display(items) {
-  let list = document.getElementById("list");
-  list.innerHTML = "";
-
-  items.forEach(item => {
-    list.innerHTML += `
-      <div style="background:white; margin:5px; padding:10px;">
-        ${item.title}
-        <button onclick="saveItem('${item.title}')">Save</button>
-      </div>
-    `;
-  });
+// ---------------- STORAGE ----------------
+function getSaved(){
+    return JSON.parse(localStorage.getItem("saved") || "[]");
 }
 
-function displaySaved() {
-  let box = document.getElementById("saved");
-  box.innerHTML = "";
-
-  if(saved.length === 0){
-    box.innerHTML = "No saved items";
-    return;
-  }
-
-  saved.forEach(item=>{
-    box.innerHTML += `<div style="background:white;margin:5px;padding:10px;">${item}</div>`;
-  });
+function saveItem(id){
+    let saved = getSaved();
+    if(!saved.includes(id)){
+        saved.push(id);
+        localStorage.setItem("saved", JSON.stringify(saved));
+    }
+    render();
 }
 
-function saveItem(title){
-  if(!saved.includes(title)){
-    saved.push(title);
-    localStorage.setItem("saved", JSON.stringify(saved));
-    displaySaved();
-  }
+// ---------------- NAV ----------------
+function show(section){
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.getElementById(section).classList.add("active");
+    render();
 }
 
-function filterCategory(type){
-  if(type==="all"){
-    display(data);
-  } else {
-    display(data.filter(item=>item.type===type));
-  }
+// ---------------- RENDER ----------------
+function render(){
+    let search = document.getElementById("search").value.toLowerCase();
+
+    let home = document.getElementById("home");
+    let featured = document.getElementById("featured");
+    let saved = document.getElementById("saved");
+
+    home.innerHTML = "";
+    featured.innerHTML = "";
+    saved.innerHTML = "";
+
+    let savedList = getSaved();
+
+    opportunities.forEach(op => {
+
+        if(op.title.toLowerCase().includes(search)){
+
+            let card = `
+            <div class="card ${op.featured ? 'featured' : ''}">
+                <h3>${op.title}</h3>
+                <p>Type: ${op.type}</p>
+                <button class="saveBtn" onclick="saveItem(${op.id})">Save</button>
+            </div>
+            `;
+
+            home.innerHTML += card;
+
+            if(op.featured){
+                featured.innerHTML += card;
+            }
+
+            if(savedList.includes(op.id)){
+                saved.innerHTML += card;
+            }
+        }
+    });
+
+    updateStats();
 }
 
-function searchItems(){
-  let value = document.getElementById("search").value.toLowerCase();
-  let filtered = data.filter(item=>item.title.toLowerCase().includes(value));
-  display(filtered);
+// ---------------- STATS ----------------
+function updateStats(){
+    let savedList = getSaved();
+    document.getElementById("stats").innerHTML =
+        "Saved Opportunities: " + savedList.length;
 }
 
-function loadUrgent(){
-  let box = document.getElementById("urgent");
-  data.filter(i=>i.urgent).forEach(i=>{
-    box.innerHTML += `<div style="background:#fff;padding:10px;margin:5px;">${i.title}</div>`;
-  });
-}
-
-function loadTrending(){
-  let box = document.getElementById("trending");
-  data.slice(0,3).forEach(i=>{
-    box.innerHTML += `<div style="background:#fff;padding:10px;margin:5px;">${i.title}</div>`;
-  });
-}
-
-function askAI(){
-  let input = document.getElementById("aiInput").value;
-  let chat = document.getElementById("chat");
-
-  if(!input) return;
-
-  chat.innerHTML += "<p><b>You:</b> "+input+"</p>";
-
-  let reply = "Try searching opportunities or stay consistent. Success comes step by step.";
-
-  if(input.includes("money")) reply="You can start with online jobs, small business, or freelancing.";
-  if(input.includes("scholarship")) reply="Check scholarship section and apply early.";
-  if(input.includes("job")) reply="Search for remote or local jobs and apply daily.";
-
-  chat.innerHTML += "<p><b>AI:</b> "+reply+"</p>";
-
-  document.getElementById("aiInput").value="";
-}
-
-display(data);
-displaySaved();
-loadUrgent();
-loadTrending();
+// ---------------- START ----------------
+render();
 
 </script>
 
