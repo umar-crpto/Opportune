@@ -3,18 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opportune Pro</title>
+<title>Opportune 100+</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:white;}
 header{padding:15px;text-align:center;background:#111827;font-size:22px;font-weight:bold;}
-.tabs{display:flex;justify-content:space-around;background:#1f2937;padding:10px;position:sticky;top:0;}
-.tab{cursor:pointer;font-size:13px;}
+.tabs{display:flex;flex-wrap:wrap;justify-content:space-around;background:#1f2937;padding:10px;position:sticky;top:0;}
+.tab{cursor:pointer;font-size:12px;margin:5px;}
 .active{color:#22c55e;font-weight:bold;}
 input{width:90%;padding:10px;margin:10px;border-radius:10px;border:none;outline:none;}
-.card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;}
+.card{background:#1e293b;margin:10px;padding:10px;border-radius:10px;cursor:pointer;}
 button{padding:6px 10px;border:none;border-radius:6px;background:#22c55e;cursor:pointer;}
 .small{font-size:12px;opacity:0.8;}
+.modal{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:#000000cc;display:none;justify-content:center;align-items:center;
+}
+.modal-content{
+background:#1e293b;padding:15px;border-radius:10px;width:90%;
+}
 </style>
 </head>
 
@@ -34,55 +41,47 @@ button{padding:6px 10px;border:none;border-radius:6px;background:#22c55e;cursor:
 
 <div id="content"></div>
 
+<div class="modal" id="modal">
+<div class="modal-content">
+<h3 id="mTitle"></h3>
+<p id="mDesc"></p>
+<p id="mMoney"></p>
+<p id="mSteps"></p>
+<button onclick="closeModal()">Close</button>
+</div>
+</div>
+
 <script>
 
 let tab="jobs";
 
+/* --------- GENERATE 100 ITEMS EACH ---------- */
+
+function gen(type,prefix){
+let arr=[];
+for(let i=1;i<=100;i++){
+arr.push({
+id:type+"_"+i,
+t:prefix+" "+i,
+d:"Click to view full details",
+money:"$50 - $5000 (varies)",
+earn:"$100 - $10000/month potential",
+steps:"Start small → Learn skill → Build experience → Scale up"
+});
+}
+return arr;
+}
+
 let data={
-
-jobs:[
-"Software Developer","Data Analyst","Remote Customer Support","Freelance Writer","Graphic Designer",
-"UI/UX Designer","Video Editor","Web Developer","App Tester","Cybersecurity Intern",
-"AI Trainer","Cloud Support Engineer","Digital Marketer","Sales Representative","Accountant Trainee",
-"Virtual Assistant","Remote Tutor","IT Support Technician","Network Assistant","Product Manager Intern",
-"Social Media Manager","Content Creator","Data Entry Clerk","Translator","Project Assistant",
-"HR Assistant","Research Assistant","Business Analyst Intern","Mobile App Developer","Game Tester"
-].map(t=>({t,d:"High paying professional opportunity"})),
-
-scholarships:[
-"Mastercard Foundation Scholarship","Commonwealth Scholarship","Chevening UK Scholarship","DAAD Germany Scholarship",
-"Japan MEXT Scholarship","Fulbright USA Scholarship","Erasmus Mundus Scholarship","African Union Scholarship",
-"Google Africa Scholarship","Microsoft Learn Scholarship","Huawei Scholarship","UN Youth Program",
-"World Bank Internship","Rotary Peace Scholarship","Korean Government Scholarship",
-"Chinese Government Scholarship","Australian Awards Scholarship","Turkey Burslari Scholarship",
-"Swedish Institute Scholarship","Ireland Government Scholarship",
-"Canada Vanier Scholarship","Knight-Hennessy Stanford","ADB Scholarship",
-"IMF Internship Program","UNICEF Youth Program","African Leadership University Grant",
-"Islamic Development Scholarship","Commonwealth Shared Scholarship","Tech Women Program","WHO Internship"
-].map(t=>({t,d:"Fully funded international opportunity"})),
-
-hustles:[
-"Freelance Copywriting","TikTok Monetization","YouTube Automation","Affiliate Marketing","Dropshipping Business",
-"Print on Demand","Phone Repair Service","Graphic Design Freelancing","Social Media Management","Online Tutoring",
-"App Development Services","Website Building Service","Logo Design Business","Video Editing Agency","AI Content Creation",
-"Forex Trading (Skill-based)","Crypto Research Trading","Photography Business","Drone Videography","Car Washing Service",
-"Food Delivery Service","Laundry Pickup Business","Cleaning Service Business","Barber Mobile Service","Hair Braiding Business",
-"Digital Products Selling","E-book Writing","Online Course Creation","Reselling Sneakers","Import/Export Small Trade"
-].map(t=>({t,d:"High income skill-based hustle"})),
-
-business:[
-"Tech Startup","E-commerce Store","Agriculture Farm","Poultry Farming","Fish Farming",
-"Real Estate Agency","Mini Supermarket","Restaurant Business","Bakery Business","Clothing Brand",
-"Phone Accessories Shop","Printing Business","Cyber Café","Delivery Company","Car Wash Station",
-"Beauty Salon","Barber Shop","Hardware Store","Transport Taxi Business","Cleaning Company",
-"Event Planning Business","Marketing Agency","Software Company","Construction Company","Import/Export Company",
-"Furniture Making Business","Solar Installation Business","Water Supply Business","Gym Fitness Center","Education School Center"
-].map(t=>({t,d:"Scalable high-profit business idea"}))
-
+jobs:gen("job","Job Opportunity"),
+scholarships:gen("sch","Scholarship Program"),
+hustles:gen("hus","Side Hustle Idea"),
+business:gen("biz","Business Idea")
 };
 
 let saved=JSON.parse(localStorage.getItem("saved"))||[];
 
+/* --------- TAB SWITCH ---------- */
 function switchTab(t){
 tab=t;
 document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
@@ -90,16 +89,36 @@ event.target.classList.add("active");
 render();
 }
 
+/* --------- SAVE FIXED ---------- */
 function saveItem(item){
+let exists=saved.find(s=>s.id===item.id);
+if(!exists){
 saved.push(item);
 localStorage.setItem("saved",JSON.stringify(saved));
 alert("Saved!");
 }
+}
 
+/* --------- MODAL VIEW ---------- */
+function openModal(item){
+document.getElementById("modal").style.display="flex";
+document.getElementById("mTitle").innerText=item.t;
+document.getElementById("mDesc").innerText=item.d;
+document.getElementById("mMoney").innerText="💰 Cost: "+item.money+" | 📈 Earnings: "+item.earn;
+document.getElementById("mSteps").innerText="🧠 How to start: "+item.steps;
+}
+
+/* --------- CLOSE ---------- */
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
+
+/* --------- SEARCH ---------- */
 function match(i,q){
 return i.t.toLowerCase().includes(q)||i.d.toLowerCase().includes(q);
 }
 
+/* --------- RENDER ---------- */
 function render(){
 let q=document.getElementById("search").value.toLowerCase();
 let list=[];
@@ -115,10 +134,10 @@ c.innerHTML="";
 
 list.filter(i=>match(i,q)).forEach(i=>{
 c.innerHTML+=`
-<div class="card">
+<div class="card" onclick='openModal(${JSON.stringify(i)})'>
 <b>${i.t}</b>
 <p class="small">${i.d}</p>
-<button onclick='saveItem(${JSON.stringify(i)})'>Save</button>
+<button onclick='event.stopPropagation();saveItem(${JSON.stringify(i)})'>Save</button>
 </div>
 `;
 });
