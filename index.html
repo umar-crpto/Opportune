@@ -11,8 +11,29 @@ body {
     font-family: Arial, sans-serif;
     background:#0f172a;
     color:white;
-}
 
+<!-- OPPORTUNE MAIN FEATURES -->
+<div id="opportuneApp" style="margin-top:20px; font-family: Arial;">
+
+  <h2 style="text-align:center;">🌟 Opportune Hub</h2>
+
+  <!-- NAV BUTTONS -->
+  <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:15px 0;">
+    <button onclick="showSection('jobs')">💼 Jobs</button>
+    <button onclick="showSection('scholarships')">🎓 Scholarships</button>
+    <button onclick="showSection('hustles')">💡 Side Hustles</button>
+    <button onclick="showSection('urgent')">🔥 Urgent</button>
+  </div>
+
+  <!-- CONTENT AREA -->
+  <div id="contentBox" style="padding:15px; border:1px solid #ccc; border-radius:10px; min-height:200px;">
+
+    <h3>Welcome to Opportune 🚀</h3>
+    <p>Select a category above to explore opportunities.</p>
+
+  </div>
+
+</div>
 /* HEADER */
 header {
     background:#1e293b;
