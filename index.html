@@ -1,210 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opportune</title>
+  <title>Opportune</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-    margin:0;
-    font-family: Arial, sans-serif;
-    background:#0f172a;
-    color:white;
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #f4f6f8;
+    }
 
-<!-- OPPORTUNE MAIN FEATURES -->
-<div id="opportuneApp" style="margin-top:20px; font-family: Arial;">
+    .header {
+      background: #1e90ff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
 
-  <h2 style="text-align:center;">🌟 Opportune Hub</h2>
+    .search {
+      padding: 15px;
+      text-align: center;
+    }
 
-  <!-- NAV BUTTONS -->
-  <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:15px 0;">
-    <button onclick="showSection('jobs')">💼 Jobs</button>
-    <button onclick="showSection('scholarships')">🎓 Scholarships</button>
-    <button onclick="showSection('hustles')">💡 Side Hustles</button>
-    <button onclick="showSection('urgent')">🔥 Urgent</button>
-  </div>
+    input {
+      width: 90%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
 
-  <!-- CONTENT AREA -->
-  <div id="contentBox" style="padding:15px; border:1px solid #ccc; border-radius:10px; min-height:200px;">
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+    }
 
-    <h3>Welcome to Opportune 🚀</h3>
-    <p>Select a category above to explore opportunities.</p>
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-  </div>
+    .jobs { background: #3498db; color: white; }
+    .scholarships { background: #2ecc71; color: white; }
+    .hustles { background: #f39c12; color: white; }
+    .urgent { background: #e74c3c; color: white; }
 
-</div>
-/* HEADER */
-header {
-    background:#1e293b;
-    padding:15px;
-    text-align:center;
-    font-size:20px;
-    font-weight:bold;
-}
-
-/* NAV */
-nav {
-    display:flex;
-    justify-content:space-around;
-    background:#111827;
-    padding:10px;
-    position:sticky;
-    top:0;
-}
-
-nav button {
-    background:none;
-    border:none;
-    color:white;
-    font-size:14px;
-}
-
-/* SEARCH */
-#search {
-    width:90%;
-    margin:10px;
-    padding:10px;
-    border-radius:8px;
-    border:none;
-}
-
-/* CARDS */
-.card {
-    background:#1e293b;
-    margin:10px;
-    padding:10px;
-    border-radius:10px;
-}
-
-.card button {
-    margin-top:5px;
-    padding:5px 10px;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-}
-
-/* SECTIONS */
-.section { display:none; }
-.active { display:block; }
-
-.saveBtn { background:green; color:white; }
-.featured { border:2px solid gold; }
-
-</style>
+    .box {
+      background: white;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      min-height: 200px;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>🚀 OPPORTUNE</header>
+<div class="header">🌟 OPPORTUNE</div>
 
-<nav>
-<button onclick="show('home')">Home</button>
-<button onclick="show('featured')">Featured</button>
-<button onclick="show('saved')">Saved</button>
-<button onclick="show('profile')">Profile</button>
-</nav>
+<div class="search">
+  <input id="searchInput" placeholder="Search jobs, scholarships, hustles..." onkeyup="search()">
+</div>
 
-<input type="text" id="search" placeholder="Search jobs, scholarships..." onkeyup="render()">
+<div class="buttons">
+  <button class="jobs" onclick="show('jobs')">💼 Jobs</button>
+  <button class="scholarships" onclick="show('scholarships')">🎓 Scholarships</button>
+  <button class="hustles" onclick="show('hustles')">💡 Side Hustles</button>
+  <button class="urgent" onclick="show('urgent')">🔥 Urgent</button>
+</div>
 
-<!-- HOME -->
-<div id="home" class="section active"></div>
-
-<!-- FEATURED -->
-<div id="featured" class="section"></div>
-
-<!-- SAVED -->
-<div id="saved" class="section"></div>
-
-<!-- PROFILE -->
-<div id="profile" class="section">
-<h3>Your Stats 📊</h3>
-<p id="stats"></p>
+<div class="box" id="content">
+  <h2>Welcome to Opportune 🚀</h2>
+  <p>Find jobs, scholarships, and money opportunities in one place.</p>
 </div>
 
 <script>
+const data = {
+  jobs: `
+    <h2>💼 Jobs</h2>
+    <p>- Part-time jobs in Uganda</p>
+    <p>- Online freelance work</p>
+    <p>- Internships for students</p>
+  `,
 
-// ---------------- DATA ----------------
-let opportunities = [
-    {id:1, title:"Marketing Job Kampala", type:"Job", featured:true},
-    {id:2, title:"University Scholarship 2026", type:"Scholarship", featured:true},
-    {id:3, title:"Online Writing Side Hustle", type:"Hustle", featured:false},
-    {id:4, title:"Internship at Tech Company", type:"Job", featured:false},
-];
+  scholarships: `
+    <h2>🎓 Scholarships</h2>
+    <p>- Uganda university bursaries</p>
+    <p>- African scholarships</p>
+    <p>- International funding programs</p>
+  `,
 
-// ---------------- STORAGE ----------------
-function getSaved(){
-    return JSON.parse(localStorage.getItem("saved") || "[]");
+  hustles: `
+    <h2>💡 Side Hustles</h2>
+    <p>- Phone accessories business</p>
+    <p>- Graphic design basics</p>
+    <p>- Social media management</p>
+  `,
+
+  urgent: `
+    <h2>🔥 Urgent Opportunities</h2>
+    <p>- Apply in 48 hours jobs</p>
+    <p>- Limited scholarships</p>
+    <p>- Fast hiring programs</p>
+  `
+};
+
+function show(type){
+  document.getElementById("content").innerHTML = data[type];
 }
 
-function saveItem(id){
-    let saved = getSaved();
-    if(!saved.includes(id)){
-        saved.push(id);
-        localStorage.setItem("saved", JSON.stringify(saved));
-    }
-    render();
+function search(){
+  let input = document.getElementById("searchInput").value.toLowerCase();
+  document.getElementById("content").innerHTML = `
+    <h3>🔍 Search Results</h3>
+    <p>You searched for: <b>${input}</b></p>
+    <p>Matching opportunities will appear here (next upgrade = real database)</p>
+  `;
 }
-
-// ---------------- NAV ----------------
-function show(section){
-    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-    document.getElementById(section).classList.add("active");
-    render();
-}
-
-// ---------------- RENDER ----------------
-function render(){
-    let search = document.getElementById("search").value.toLowerCase();
-
-    let home = document.getElementById("home");
-    let featured = document.getElementById("featured");
-    let saved = document.getElementById("saved");
-
-    home.innerHTML = "";
-    featured.innerHTML = "";
-    saved.innerHTML = "";
-
-    let savedList = getSaved();
-
-    opportunities.forEach(op => {
-
-        if(op.title.toLowerCase().includes(search)){
-
-            let card = `
-            <div class="card ${op.featured ? 'featured' : ''}">
-                <h3>${op.title}</h3>
-                <p>Type: ${op.type}</p>
-                <button class="saveBtn" onclick="saveItem(${op.id})">Save</button>
-            </div>
-            `;
-
-            home.innerHTML += card;
-
-            if(op.featured){
-                featured.innerHTML += card;
-            }
-
-            if(savedList.includes(op.id)){
-                saved.innerHTML += card;
-            }
-        }
-    });
-
-    updateStats();
-}
-
-// ---------------- STATS ----------------
-function updateStats(){
-    let savedList = getSaved();
-    document.getElementById("stats").innerHTML =
-        "Saved Opportunities: " + savedList.length;
-}
-
-// ---------------- START ----------------
-render();
-
 </script>
 
 </body>
