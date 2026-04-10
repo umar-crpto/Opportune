@@ -1,145 +1,182 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Opportune</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opportune</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #f2f4f8;
-    }
+<style>
+body{
+font-family: Arial;
+margin:0;
+background:#0f172a;
+color:white;
+}
 
-    .header {
-      background: #1e90ff;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-    }
+header{
+background:#111827;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
 
-    .search {
-      padding: 10px;
-    }
+.search{
+padding:10px;
+text-align:center;
+}
 
-    input {
-      width: 95%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-    }
+input{
+width:90%;
+padding:10px;
+border-radius:10px;
+border:none;
+outline:none;
+}
 
-    .feed {
-      padding: 10px;
-    }
+.tabs{
+display:flex;
+justify-content:space-around;
+background:#1f2937;
+padding:10px;
+}
 
-    .card {
-      background: white;
-      margin-bottom: 10px;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+.tab{
+cursor:pointer;
+padding:8px;
+font-size:14px;
+}
 
-    .tag {
-      font-size: 12px;
-      padding: 3px 8px;
-      border-radius: 5px;
-      color: white;
-      display: inline-block;
-      margin-bottom: 5px;
-    }
+.active{
+color:#22c55e;
+font-weight:bold;
+}
 
-    .job { background: #3498db; }
-    .scholarship { background: #2ecc71; }
-    .hustle { background: #f39c12; }
-    .urgent { background: #e74c3c; }
+.card{
+background:#1e293b;
+margin:10px;
+padding:10px;
+border-radius:10px;
+}
 
-    .btn {
-      margin-top: 10px;
-      padding: 8px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+button{
+padding:5px 10px;
+margin-top:5px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
 
-    .save {
-      background: #555;
-      color: white;
-    }
+.save{
+background:#22c55e;
+color:black;
+}
 
-    .aiBtn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #000;
-      color: white;
-      padding: 15px;
-      border-radius: 50%;
-      font-size: 18px;
-    }
+.small{
+font-size:12px;
+opacity:0.8;
+}
 
-  </style>
+.hidden{display:none;}
+</style>
 </head>
 
 <body>
 
-<div class="header">🌟 OPPORTUNE</div>
+<header>Opportune</header>
 
 <div class="search">
-  <input id="search" placeholder="Search opportunities..." onkeyup="search()">
+<input id="search" placeholder="Search jobs, scholarships, hustles..." onkeyup="render()">
 </div>
 
-<div class="feed" id="feed"></div>
+<div class="tabs">
+<div class="tab active" onclick="switchTab('jobs')">Jobs</div>
+<div class="tab" onclick="switchTab('scholarships')">Scholarships</div>
+<div class="tab" onclick="switchTab('hustles')">Hustles</div>
+<div class="tab" onclick="switchTab('business')">Business</div>
+<div class="tab" onclick="switchTab('saved')">Saved</div>
+</div>
 
-<div class="aiBtn" onclick="aiHelp()">🤖</div>
+<div id="content"></div>
 
 <script>
-const data = [
-  {type:"job", title:"Part-time Online Job", desc:"Work from home and earn daily income."},
-  {type:"scholarship", title:"Uganda University Scholarship", desc:"Full tuition support available."},
-  {type:"hustle", title:"Phone Accessories Business", desc:"Start small and grow income."},
-  {type:"urgent", title:"Urgent Internship Closing Soon", desc:"Apply within 48 hours."}
-];
 
-function render(list){
-  let html = "";
-  list.forEach(item=>{
-    html += `
-      <div class="card">
-        <div class="tag ${item.type}">${item.type.toUpperCase()}</div>
-        <h3>${item.title}</h3>
-        <p>${item.desc}</p>
-        <button class="btn save" onclick="saveItem('${item.title}')">Save</button>
-      </div>
-    `;
-  });
-  document.getElementById("feed").innerHTML = html;
+let tab="jobs";
+
+let data={
+jobs:[
+{title:"Shop Assistant Job",desc:"Kampala supermarket hiring staff",type:"job"},
+{title:"Remote Data Entry",desc:"Work online from home",type:"job"},
+{title:"Internship at Tech Company",desc:"Learn software development",type:"job"}
+],
+
+scholarships:[
+{title:"Uganda University Scholarship",desc:"Full tuition support",type:"scholarship"},
+{title:"African Leaders Program",desc:"Study abroad opportunity",type:"scholarship"}
+],
+
+hustles:[
+{title:"Phone Repair Business",desc:"Start with small capital",type:"hustle"},
+{title:"TikTok Content Creation",desc:"Earn from brand deals",type:"hustle"}
+],
+
+business:[
+{title:"Mini Food Delivery",desc:"Start local food delivery service",type:"business"},
+{title:"Clothes Reselling",desc:"Buy and resell fashion items",type:"business"}
+]
+};
+
+let saved=JSON.parse(localStorage.getItem("saved"))||[];
+
+function switchTab(t){
+tab=t;
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+event.target.classList.add("active");
+render();
 }
 
-function search(){
-  let val = document.getElementById("search").value.toLowerCase();
-  let filtered = data.filter(d =>
-    d.title.toLowerCase().includes(val) ||
-    d.desc.toLowerCase().includes(val)
-  );
-  render(filtered);
+function saveItem(item){
+saved.push(item);
+localStorage.setItem("saved",JSON.stringify(saved));
+alert("Saved!");
 }
 
-function aiHelp(){
-  alert("🤖 AI Suggestion:\nStart with small hustles like phone accessories or online freelancing while applying for scholarships.");
+function matchSearch(item,query){
+return item.title.toLowerCase().includes(query)||item.desc.toLowerCase().includes(query);
 }
 
-function saveItem(title){
-  let saved = JSON.parse(localStorage.getItem("saved") || "[]");
-  saved.push(title);
-  localStorage.setItem("saved", JSON.stringify(saved));
-  alert("Saved!");
+function render(){
+
+let q=document.getElementById("search").value.toLowerCase();
+let container=document.getElementById("content");
+container.innerHTML="";
+
+let list=[];
+
+if(tab=="jobs") list=data.jobs;
+if(tab=="scholarships") list=data.scholarships;
+if(tab=="hustles") list=data.hustles;
+if(tab=="business") list=data.business;
+if(tab=="saved") list=saved;
+
+if(list.length==0){
+container.innerHTML="<p style='text-align:center'>No data yet</p>";
+return;
 }
 
-render(data);
+list.filter(i=>matchSearch(i,q)).forEach(i=>{
+container.innerHTML+=`
+<div class="card">
+<b>${i.title}</b>
+<p class="small">${i.desc}</p>
+<button class="save" onclick='saveItem(${JSON.stringify(i)})'>Save</button>
+</div>
+`;
+});
+}
+
+render();
+
 </script>
 
 </body>
